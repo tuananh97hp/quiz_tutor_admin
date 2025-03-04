@@ -1,0 +1,31 @@
+version: '0.0.1'
+
+services:
+  web_app:
+    container_name: web_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/app
+
+  nginx_app:
+    image: nginx:0.0.1
+    container_name: nginx_app
+    restart: always
+    tty: true
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./:/app
+    networks:
+      - web-app-network
+    extra_hosts:
+      - /:/
+
+networks:
+  web-app-network:
