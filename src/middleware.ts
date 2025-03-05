@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!token && !pathname.startsWith(ROUTES.LOGIN)) {
-    return NextResponse.redirect(new URL(ROUTES.LOGIN, request.url));
+    // return NextResponse.redirect(new URL(ROUTES.LOGIN, request.url));
   }
 
   if (token && pathname.startsWith(ROUTES.LOGIN)) {

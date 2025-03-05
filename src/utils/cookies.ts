@@ -51,7 +51,7 @@ const transformAppRouterCookies = (cookies: AppRouterCookies): TmpCookiesObj => 
 const stringify = (value: string = '') => {
   try {
     const result = JSON.stringify(value);
-    return /^[\{\[]/.test(result) ? result : value;
+    return /^[{\[]/.test(result) ? result : value;
   } catch (e) {
     return value;
   }
@@ -74,7 +74,7 @@ export const getCookies = (options?: OptionsType): TmpCookiesObj => {
   }
 
   let req;
-  // DefaultOptions['req] can be casted here because is narrowed by using the fn: isContextFromAppRouter
+  // DefaultOptions['req'] can be cast here because is narrowed by using the fn: isContextFromAppRouter
   if (options) req = options.req as DefaultOptions['req'];
 
   if (!isClientSide()) {

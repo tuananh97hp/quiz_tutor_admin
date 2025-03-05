@@ -55,8 +55,8 @@ const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/auth/login',
-    signOut: '/auth/login',
+    signIn: '/login',
+    signOut: '/login',
   },
   secret: 'your_secret',
   events: {},

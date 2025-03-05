@@ -14,8 +14,6 @@ export const sampleAtom = atom({
 export const sampleSelector = selector({
   key: 'sampleSelector',
   get: ({ get }) => {
-    const sampleVal = get(sampleAtom);
-
-    return sampleVal;
+    return get(sampleAtom);
   },
 });
