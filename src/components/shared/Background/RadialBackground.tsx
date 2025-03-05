@@ -12,6 +12,6 @@ const RadialBackground = () => {
       </div>
     </div>
   );
-}
+};
 
-export default RadialBackground
+export default RadialBackground;

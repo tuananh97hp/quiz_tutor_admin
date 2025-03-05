@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 // global styling
 import '@/assets/css/global.css';
+import { ThemeProvider } from '@/components/theme-provider';
+import { SearchProvider } from '@/context/search-context';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -23,10 +25,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <SessionProvider session={session}>
-          <RecoilRoot>
-            {children}
-            <ToastContainer />
-          </RecoilRoot>
+          <SearchProvider>
+            <RecoilRoot>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+                <ToastContainer />
+              </ThemeProvider>
+            </RecoilRoot>
+          </SearchProvider>
         </SessionProvider>
       </body>
     </html>

@@ -18,7 +18,7 @@ import type { NextRequest, NextResponse } from 'next/server';
 const isClientSide = (): boolean => typeof window !== 'undefined';
 
 const isCookiesFromAppRouter = (
-  cookieStore: TmpCookiesObj | AppRouterCookies | undefined
+  cookieStore: TmpCookiesObj | AppRouterCookies | undefined,
 ): cookieStore is AppRouterCookies => {
   if (!cookieStore) return false;
   return (
@@ -30,7 +30,7 @@ const isCookiesFromAppRouter = (
 };
 
 const isContextFromAppRouter = (
-  context?: OptionsType
+  context?: OptionsType,
 ): context is { res?: NextResponse; req?: NextRequest; cookies?: CookiesFn } => {
   return (
     (!!context?.req && 'cookies' in context.req && isCookiesFromAppRouter(context?.req.cookies)) ||

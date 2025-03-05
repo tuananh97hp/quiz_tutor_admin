@@ -1,13 +1,11 @@
 import React from 'react';
-import RadialBackground from '@/components/shared/RadialBackground';
-
+import RadialBackground from '@/components/shared/Background/RadialBackground';
 
 type UnauthenticatedLayoutProps = {
   children: React.ReactNode;
 };
 
 export default async function UnauthenticatedLayout({ children }: UnauthenticatedLayoutProps) {
-
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
       {/* Reusable background component */}

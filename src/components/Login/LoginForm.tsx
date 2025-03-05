@@ -1,72 +1,105 @@
+'use client';
+
 import React from 'react';
-
-// Utils
-import { cn } from '@/lib/utils';
-
-// UI components
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { PasswordInput } from '@/components/shared/password-input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
+import { setCookie } from '@/utils/cookies';
+import { STORAGE_KEYS } from '@/utils/constants';
+import { redirect } from 'next/navigation';
+import { ROUTES } from '@/router/routes';
 
-const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) => {
+// Types
+interface ILoginFormProps {
+  csrfToken: string;
+}
+
+const formSchema = z.object({
+  username: z.string().email(),
+  password: z.string().nonempty(),
+});
+
+const LoginForm = ({ csrfToken }: ILoginFormProps) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  });
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log(data);
+    return;
+    signIn('credentials', {
+      redirect: true,
+      callbackUrl: '/',
+    })
+      .then(() => {
+        setCookie(STORAGE_KEYS.CSRF_TOKEN, csrfToken);
+        redirect(ROUTES.HOME_PAGE);
+      })
+      .finally(() => {});
+  }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className='text-2xl'>Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form>
-            <div className='flex flex-col gap-6'>
-              <div className='grid gap-2'>
-                <Label htmlFor='email'>Email</Label>
-                <Input
-                  id='email'
-                  type='email'
-                  placeholder='m@example.com'
-                  required
-                />
-              </div>
-              <div className='grid gap-2'>
-                <div className='flex items-center'>
-                  <Label htmlFor='password'>Password</Label>
-                  <a
-                    href='#'
-                    className='ml-auto inline-block text-sm underline-offset-4 hover:underline'
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id='password' type='password' required />
-              </div>
-              <Button type='submit' className='w-full'>
-                Login
-              </Button>
-              <Button variant='outline' className='w-full'>
-                Login with Google
-              </Button>
-            </div>
-            <div className='mt-4 text-center text-sm'>
-              Don&apos;t have an account?{' '}
-              <a href='#' className='underline underline-offset-4'>
-                Sign up
-              </a>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-6">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="user@gmail.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <a
+              href="/forgot-password"
+              className="text-right text-muted-foreground text-sm duration-200 hover:opacity-70"
+            >
+              Forgot your password?
+            </a>
+          </div>
+          <Button type="submit" className="dark:bg-primary dark:hover:opacity-90 w-full">
+            Login
+          </Button>
+        </div>
+        <div className="mt-4 text-muted-foreground text-center text-sm">
+          Don&apos;t have an account? Contact admin to create one.
+        </div>
+      </form>
+    </Form>
   );
 };
 export default LoginForm;
