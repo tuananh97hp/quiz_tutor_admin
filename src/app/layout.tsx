@@ -22,22 +22,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession();
 
   return (
-    <html lang="en">
-      <body suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning>
+      <body>
         <SessionProvider session={session}>
-          <SearchProvider>
-            <RecoilRoot>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-                <ToastContainer />
-              </ThemeProvider>
-            </RecoilRoot>
-          </SearchProvider>
+          <RecoilRoot>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <ToastContainer />
+            </ThemeProvider>
+          </RecoilRoot>
         </SessionProvider>
       </body>
     </html>

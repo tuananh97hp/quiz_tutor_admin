@@ -3,6 +3,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
   fixed?: boolean;
@@ -27,14 +28,13 @@ export const Header = ({ className, fixed, children, ...props }: HeaderProps) =>
   return (
     <header
       className={cn(
-        'flex h-16 items-center gap-3 bg-background p-4 sm:gap-4',
+        'flex h-16 items-center gap-3 bg-background p-4 sm:gap-4 border border-b-border',
         fixed && 'header-fixed peer/header fixed z-50 w-[inherit] rounded-md',
         offset > 10 && fixed ? 'shadow' : 'shadow-none',
         className,
       )}
       {...props}
     >
-      <Separator orientation="vertical" className="h-6" />
       {children}
     </header>
   );

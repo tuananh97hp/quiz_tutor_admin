@@ -18,12 +18,19 @@ type NavCollapsible = BaseNavItem & {
 
 type NavItem = NavCollapsible | NavLink;
 
+interface Team {
+  name: string;
+  logo: React.ElementType;
+  plan: string;
+}
+
 interface NavGroup {
   title: string;
   items: NavItem[];
 }
 
 interface SidebarData {
+  teams: Team[];
   navGroups: NavGroup[];
 }
 
