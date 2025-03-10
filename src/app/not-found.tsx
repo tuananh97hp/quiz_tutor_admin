@@ -1,9 +1,11 @@
 import Link from 'next/link';
+import { ParticlesBackground } from '@/components/shared/Background/ParticlesBackground';
 
 export default function NotFound() {
   return (
-    <main className="w-full h-screen flex flex-col justify-center items-center flex-1 bg-[#1A2238]">
-      <h1 className="text-9xl font-extrabold text-white tracking-widest">404</h1>
+    <main className="w-full h-screen flex flex-col justify-center items-center flex-1">
+      <ParticlesBackground />
+      <h1 className="text-9xl font-extrabold ">404</h1>
       <div className="bg-[#FF6A3D] px-2 text-sm rounded rotate-12 absolute">Page Not Found</div>
       <button className="mt-5">
         <div className="relative inline-block text-sm font-medium text-[#FF6A3D] group active:text-orange-500 focus:outline-none focus:ring">

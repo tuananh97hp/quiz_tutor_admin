@@ -232,3 +232,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/*---custom---*/
+
+.\[\&_svg\]\:size-4 svg,
+.\[\&\>svg\]\:size-4 > svg {
+  width: 1rem;
+  height: 1rem;
+}
