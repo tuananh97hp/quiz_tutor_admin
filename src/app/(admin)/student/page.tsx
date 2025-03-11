@@ -1,12 +1,14 @@
 import { Metadata } from 'next';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { UserRoundPlus } from 'lucide-react';
+import { UserRoundPlus, CircleCheck, Loader, UserRoundX, List } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TabButton from '@/components/shared/tab-button';
 import Link from 'next/link';
 import { getParamHref } from '@/utils/constants/handle';
 import { STUDENT_STATUS } from '@/utils/constants';
+import { InputSearch } from '@/components/shared/input-search';
+import { StudentDataTable } from '@/components/(admin)/students/student-data-table';
 
 export const metadata: Metadata = {
   title: 'Student Page',
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
 
 interface ISearchParams {
   status?: string;
+  search?: string;
 }
 
 interface IStudentPageProps {
@@ -22,28 +25,28 @@ interface IStudentPageProps {
 
 const STATUS_TABS = [
   {
-    value: STUDENT_STATUS.ACTIVE,
-    label: 'Active',
-    icon: UserRoundPlus,
-    color: 'text-green-500',
-  },
-  {
     value: STUDENT_STATUS.PROCESSING,
     label: 'Processing',
-    icon: UserRoundPlus,
+    icon: Loader,
     color: 'text-blue-500',
+  },
+  {
+    value: STUDENT_STATUS.ACTIVE,
+    label: 'Active',
+    icon: CircleCheck,
+    color: 'text-green-500',
   },
   {
     value: STUDENT_STATUS.INACTIVE,
     label: 'Inactive',
-    icon: UserRoundPlus,
+    icon: UserRoundX,
     color: 'text-red-500',
   },
   {
     value: 'all',
     label: 'All',
-    icon: UserRoundPlus,
-    color: 'text-red-500',
+    icon: List,
+    color: 'text-gray-500',
   },
 ];
 
@@ -78,14 +81,23 @@ const StudentPage = ({ searchParams = {} }: IStudentPageProps) => {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              <TabsContent value="active">Make changes to your account here.</TabsContent>
-              <TabsContent value="password">Change your password here.</TabsContent>
-              <TabsContent value="all">
-                Change your password here make changes to your account here.
-              </TabsContent>
             </Tabs>
+            <div className="-m-1 flex w-full flex-wrap gap-2 p-1">
+              <div className="flex-grow basis-64">
+                <InputSearch initialValue={searchParams.search || ''} />
+              </div>
+              <div className="flex-grow basis-64" />
+              <div className="flex-grow basis-64" />
+              <div className="flex-grow basis-64" />
+            </div>
           </div>
         </div>
+      </div>
+      <div className="mt-4">
+        <StudentDataTable
+          results={{ data: [], count: 0, currentPage: 0, perPage: 20, totalPages: 0 }}
+        />
+        <EmptyDocumentState status={status} />
       </div>
     </div>
   );
