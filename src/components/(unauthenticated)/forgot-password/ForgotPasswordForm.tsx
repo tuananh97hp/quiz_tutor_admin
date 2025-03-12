@@ -13,44 +13,26 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { PasswordInput } from '@/components/shared/password-input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
-import { setCookie } from '@/utils/cookies';
-import { STORAGE_KEYS } from '@/utils/constants';
-import { redirect } from 'next/navigation';
-import { ROUTES } from '@/router/routes';
 
 // Types
-interface ILoginFormProps {
+interface IForgotPasswordFormProps {
   csrfToken: string;
 }
 
 const formSchema = z.object({
   username: z.string().email(),
-  password: z.string().nonempty(),
 });
 
-const LoginForm = ({ csrfToken }: ILoginFormProps) => {
+const ForgotPasswordForm = ({ csrfToken }: IForgotPasswordFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
-      password: '',
     },
   });
   function onSubmit(data: z.infer<typeof formSchema>) {
     console.log(data);
-    return;
-    signIn('credentials', {
-      redirect: true,
-      callbackUrl: '/',
-    })
-      .then(() => {
-        setCookie(STORAGE_KEYS.CSRF_TOKEN, csrfToken);
-        redirect(ROUTES.HOME_PAGE);
-      })
-      .finally(() => {});
   }
 
   return (
@@ -70,36 +52,21 @@ const LoginForm = ({ csrfToken }: ILoginFormProps) => {
               </FormItem>
             )}
           />
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <PasswordInput {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <a
-              href="/forgot-password"
-              className="text-right text-muted-foreground text-sm duration-200 hover:opacity-70"
-            >
-              Forgot your password?
-            </a>
-          </div>
           <Button type="submit" className="dark:bg-primary dark:hover:opacity-90 w-full">
-            Login
+            Forgot Password
           </Button>
         </div>
         <div className="mt-4 text-muted-foreground text-center text-sm">
-          Don&apos;t have an account? Contact admin to create one.
+          Remembered your password?&nbsp;
+          <a
+            href="/login"
+            className="text-right text-muted-foreground underline underline-offset-2 text-sm duration-200 hover:opacity-70"
+          >
+            Sign in
+          </a>
         </div>
       </form>
     </Form>
   );
 };
-export default LoginForm;
+export default ForgotPasswordForm;

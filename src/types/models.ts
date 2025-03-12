@@ -8,3 +8,13 @@ export interface IStudent {
   scoring: number;
   teamId: number;
 }
+
+export interface IClass {
+  id: number;
+  name: string;
+}
+
+export interface IPayment {
+  id: number;
+  name: string;
+}

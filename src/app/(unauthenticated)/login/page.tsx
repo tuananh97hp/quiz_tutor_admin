@@ -4,7 +4,7 @@ import React from 'react';
 import { getCsrfToken } from 'next-auth/react';
 
 // components
-import LoginForm from '@/components/Login/LoginForm';
+import LoginForm from '@/components/(unauthenticated)/Login/LoginForm';
 
 // UI components
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!token && !pathname.startsWith(ROUTES.LOGIN)) {
-    // return NextResponse.redirect(new URL(ROUTES.LOGIN, request.url));
+    return NextResponse.redirect(new URL(ROUTES.LOGIN, request.url));
   }
 
   if (token && pathname.startsWith(ROUTES.LOGIN)) {
@@ -27,5 +27,5 @@ export async function middleware(request: NextRequest) {
   matcher allows you to filter Middleware to run on specific paths.
 */
 export const config = {
-  matcher: ['/((?!api|_next/static|favicon.ico|auth/forgot-password).*)'],
+  matcher: ['/((?!api|_next/static|favicon.ico|forgot-password).*)'],
 };

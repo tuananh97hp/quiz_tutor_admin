@@ -1,34 +1,34 @@
-import { ClipboardCheck, UserPlus, Users } from 'lucide-react';
+import { Loader, UserRoundCheck, UserRoundX, Users } from 'lucide-react';
 import { match } from 'ts-pattern';
 import { STUDENT_STATUS, TStudentStatus } from '@/utils/constants';
 
 export type EmptyDocumentProps = { status: TStudentStatus };
 
-export const EmptyState = ({ status }: EmptyDocumentProps) => {
+export const EmptyStudentState = ({ status }: EmptyDocumentProps) => {
   const {
     title,
     message,
     icon: Icon,
   } = match(status)
     .with(STUDENT_STATUS.PROCESSING, () => ({
-      title: `No processed students`,
-      message: `There are no students who have completed their recruitment process. Once a student is processed, they will appear here.`,
-      icon: ClipboardCheck,
+      title: `No process students`,
+      message: `There are no students currently in the recruitment process. Once a student begins their application, they will appear here.`,
+      icon: Loader,
     }))
     .with(STUDENT_STATUS.ACTIVE, () => ({
-      title: `No drafts available`,
-      message: `You currently have no student drafts. Start by adding a student to draft their profile or details.`,
-      icon: UserPlus,
+      title: `No active available`,
+      message: `There are no students who have completed their recruitment process. Once a student is processed, they will appear here.`,
+      icon: UserRoundCheck,
     }))
     .with(STUDENT_STATUS.INACTIVE, () => ({
-      title: `No drafts available`,
-      message: `You currently have no student drafts. Start by adding a student to draft their profile or details.`,
-      icon: UserPlus,
+      title: `No inactive available`,
+      message: `There are no inactive students at the moment. Any student who is no longer active will be listed here.`,
+      icon: UserRoundX,
     }))
     .otherwise(() => ({
       title: `All clear`,
       message: `All students are accounted for. Await new students to see them listed here.`,
-      icon: ClipboardCheck,
+      icon: Users,
     }));
 
   return (

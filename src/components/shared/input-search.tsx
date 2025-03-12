@@ -5,7 +5,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { Input } from '@/components/ui/input';
 
-export const InputSearch = ({ initialValue = '' }: { initialValue?: string }) => {
+export const InputSearch = ({
+  initialValue = '',
+  label = '',
+}: {
+  initialValue?: string;
+  label?: string;
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -32,7 +38,7 @@ export const InputSearch = ({ initialValue = '' }: { initialValue?: string }) =>
   return (
     <Input
       type="search"
-      placeholder={`Search candidates...`}
+      placeholder={`Search ${label} ...`}
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
     />

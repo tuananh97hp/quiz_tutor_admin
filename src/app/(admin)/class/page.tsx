@@ -1,18 +1,18 @@
 import { Metadata } from 'next';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { UserRoundPlus, CircleCheck, Loader, UserRoundX, List } from 'lucide-react';
+import { BookCheck, CircleX, BookPlus, List } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TabButton from '@/components/shared/tab-button';
 import Link from 'next/link';
 import { getParamHref } from '@/utils/constants/handle';
-import { STUDENT_STATUS } from '@/utils/constants';
+import { CLASS_STATUS } from '@/utils/constants';
 import { InputSearch } from '@/components/shared/input-search';
-import { StudentDataTable } from '@/components/(admin)/students/student-data-table';
-import { EmptyStudentState } from '@/components/(admin)/students/empty-student-state';
+import { ClassDataTable } from '@/components/(admin)/class/class-data-table';
+import { EmptyClassState } from '@/components/(admin)/class/empty-class-state';
 
 export const metadata: Metadata = {
-  title: 'Student Page',
+  title: 'Class Page',
 };
 
 interface ISearchParams {
@@ -20,27 +20,21 @@ interface ISearchParams {
   search?: string;
 }
 
-interface IStudentPageProps {
+interface IClassPageProps {
   searchParams: ISearchParams;
 }
 
 const STATUS_TABS = [
   {
-    value: STUDENT_STATUS.PROCESSING,
-    label: 'Processing',
-    icon: Loader,
-    color: 'text-blue-500',
-  },
-  {
-    value: STUDENT_STATUS.ACTIVE,
-    label: 'Active',
-    icon: CircleCheck,
+    value: CLASS_STATUS.OPEN,
+    label: 'Open',
+    icon: BookCheck,
     color: 'text-green-500',
   },
   {
-    value: STUDENT_STATUS.INACTIVE,
-    label: 'Inactive',
-    icon: UserRoundX,
+    value: CLASS_STATUS.CLOSE,
+    label: 'Close',
+    icon: CircleX,
     color: 'text-red-500',
   },
   {
@@ -51,24 +45,24 @@ const STATUS_TABS = [
   },
 ];
 
-const StudentPage = ({ searchParams = {} }: IStudentPageProps) => {
-  const { status = 'active' } = searchParams;
+const ClassPage = ({ searchParams = {} }: IClassPageProps) => {
+  const { status = 'open' } = searchParams;
 
   const getTabHref = (tab: string) => {
-    return getParamHref('student', searchParams, 'status', tab);
+    return getParamHref('/class', searchParams, 'status', tab);
   };
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-8">
       <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
         <div className="flex flex-row items-center">
           <Avatar className="dark:border-border mr-3 h-12 w-12 border-2 border-solid border-white">
-            <AvatarFallback className="text-xs text-gray-400">SL</AvatarFallback>
+            <AvatarFallback className="text-xs text-gray-400">CL</AvatarFallback>
           </Avatar>
 
-          <h1 className="text-4xl font-semibold">Student List</h1>
+          <h1 className="text-4xl font-semibold">Class List</h1>
         </div>
         <Button>
-          <UserRoundPlus /> Create Student
+          <BookPlus /> Create Class
         </Button>
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
@@ -85,7 +79,7 @@ const StudentPage = ({ searchParams = {} }: IStudentPageProps) => {
             </Tabs>
             <div className="-m-1 flex w-full flex-wrap gap-2 p-1">
               <div className="flex-grow basis-64">
-                <InputSearch initialValue={searchParams.search || ''} label="students" />
+                <InputSearch initialValue={searchParams.search || ''} label="classes" />
               </div>
               <div className="flex-grow basis-64" />
               <div className="flex-grow basis-64" />
@@ -95,13 +89,13 @@ const StudentPage = ({ searchParams = {} }: IStudentPageProps) => {
         </div>
       </div>
       <div className="mt-4">
-        <StudentDataTable
+        <ClassDataTable
           results={{ data: [], count: 0, currentPage: 0, perPage: 20, totalPages: 0 }}
         />
-        <EmptyStudentState status={status} />
+        <EmptyClassState status={status} />
       </div>
     </div>
   );
 };
 
-export default StudentPage;
+export default ClassPage;

@@ -16,25 +16,31 @@ type UnauthenticatedLayoutProps = {
 const topNav = [
   {
     title: 'Overview',
-    href: 'dashboard/overview',
+    href: '/',
     isActive: true,
     disabled: false,
   },
   {
-    title: 'Customers',
-    href: 'dashboard/customers',
+    title: 'Students',
+    href: '/student',
     isActive: false,
     disabled: true,
   },
   {
-    title: 'Products',
-    href: 'dashboard/products',
+    title: 'Classes',
+    href: '/class',
     isActive: false,
     disabled: true,
   },
   {
-    title: 'Settings',
-    href: 'dashboard/settings',
+    title: 'Payments',
+    href: '/payment',
+    isActive: false,
+    disabled: true,
+  },
+  {
+    title: 'Att',
+    href: '/attendance',
     isActive: false,
     disabled: true,
   },
