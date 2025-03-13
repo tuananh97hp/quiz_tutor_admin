@@ -18,7 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { setCookie } from '@/utils/cookies';
 import { STORAGE_KEYS } from '@/utils/constants';
-import { redirect } from 'next/navigation';
+import { redirect, useSearchParams } from 'next/navigation';
 import { ROUTES } from '@/router/routes';
 
 // Types
@@ -32,6 +32,8 @@ const formSchema = z.object({
 });
 
 const LoginForm = ({ csrfToken }: ILoginFormProps) => {
+  const searchParams = useSearchParams();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,9 +42,11 @@ const LoginForm = ({ csrfToken }: ILoginFormProps) => {
     },
   });
   function onSubmit(data: z.infer<typeof formSchema>) {
+    const callbackUrl = searchParams.get('callbackUrl') || '/';
     signIn('credentials', {
+      ...data,
       redirect: true,
-      callbackUrl: '/',
+      callbackUrl,
     }).then(() => {
       setCookie(STORAGE_KEYS.CSRF_TOKEN, csrfToken);
       redirect(ROUTES.HOME_PAGE);

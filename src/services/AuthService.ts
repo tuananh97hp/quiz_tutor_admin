@@ -13,7 +13,7 @@ const ENDPOINTS = {
 };
 
 class AuthService {
-  async login(payload: LoginRequest) {
+  async login(payload?: LoginRequest) {
     const result = await http.post(ENDPOINTS.API_LOGIN, payload);
     return result.data;
   }
