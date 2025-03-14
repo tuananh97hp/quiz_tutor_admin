@@ -1,3 +1,5 @@
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { LogOut } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 export function ProfileDropdown() {
   return (
@@ -54,7 +57,7 @@ export function ProfileDropdown() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signOut()}>
           <LogOut />
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

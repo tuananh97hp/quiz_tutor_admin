@@ -5,21 +5,32 @@ import http from '@/configs/http.config';
 import { LoginRequest } from '@/types/AuthType';
 
 // Utils
-import { deleteCookie } from '@/utils/cookies';
-import { STORAGE_KEYS } from '@/utils/constants';
+import { BaseService } from '@/services/BaseService';
 
 const ENDPOINTS = {
   API_LOGIN: '/api/login',
 };
 
-class AuthService {
+class AuthService extends BaseService {
   async login(payload?: LoginRequest) {
     const result = await http.post(ENDPOINTS.API_LOGIN, payload);
     return result.data;
   }
 
-  logout() {
-    deleteCookie(STORAGE_KEYS.CSRF_TOKEN);
+  async signOut(accessToken: string) {
+    return await this.apiPost('api/logout', accessToken);
+  }
+
+  fetchDataProfile(accessToken: string) {
+    return this.apiGet('api/user', accessToken);
+  }
+
+  refreshToken(accessToken: string) {
+    return this.apiPost('api/refresh', accessToken);
+  }
+
+  changePassword(accessToken: string, payload?: object) {
+    return this.apiPost(`api/change-password`, accessToken, payload);
   }
 }
 

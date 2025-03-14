@@ -39,7 +39,7 @@ const topNav = [
     disabled: true,
   },
   {
-    title: 'Att',
+    title: 'Attendance',
     href: '/attendance',
     isActive: false,
     disabled: true,

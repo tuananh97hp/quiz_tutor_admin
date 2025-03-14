@@ -1,6 +1,8 @@
 import Image from 'next/image';
+import { getCurrentAccessToken } from '@/utils/session';
 
-const HomePage = () => {
+const HomePage = async () => {
+  const accessToken = await getCurrentAccessToken();
   return (
     <div className="mx-auto -mt-4 w-full max-w-screen-2xl px-4 md:px-8">
       <Image

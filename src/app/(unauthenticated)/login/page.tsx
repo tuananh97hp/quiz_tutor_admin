@@ -10,8 +10,6 @@ import LoginForm from '@/components/(unauthenticated)/Login/LoginForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function LoginPage() {
-  const csrfToken = (await getCsrfToken()) || '';
-
   return (
     <div className="flex flex-col h-screen justify-center items-center">
       <div className="xs:p-0 mx-auto md:w-full md:max-w-md">
@@ -23,7 +21,7 @@ export default async function LoginPage() {
             </CardHeader>
             <hr className="mb-4" />
             <CardContent>
-              <LoginForm csrfToken={csrfToken} />
+              <LoginForm />
             </CardContent>
           </Card>
         </div>

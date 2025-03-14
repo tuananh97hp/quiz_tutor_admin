@@ -16,22 +16,17 @@ import {
 import { PasswordInput } from '@/components/shared/password-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
-import { setCookie } from '@/utils/cookies';
-import { STORAGE_KEYS } from '@/utils/constants';
-import { redirect, useSearchParams } from 'next/navigation';
-import { ROUTES } from '@/router/routes';
+import { useSearchParams } from 'next/navigation';
 
 // Types
-interface ILoginFormProps {
-  csrfToken: string;
-}
+interface ILoginFormProps {}
 
 const formSchema = z.object({
   username: z.string().email(),
   password: z.string().nonempty(),
 });
 
-const LoginForm = ({ csrfToken }: ILoginFormProps) => {
+const LoginForm = ({}: ILoginFormProps) => {
   const searchParams = useSearchParams();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,15 +36,12 @@ const LoginForm = ({ csrfToken }: ILoginFormProps) => {
       password: '',
     },
   });
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     const callbackUrl = searchParams.get('callbackUrl') || '/';
-    signIn('credentials', {
+    await signIn('credentials', {
       ...data,
       redirect: true,
       callbackUrl,
-    }).then(() => {
-      setCookie(STORAGE_KEYS.CSRF_TOKEN, csrfToken);
-      redirect(ROUTES.HOME_PAGE);
     });
   }
 

@@ -2,15 +2,19 @@ import NextAuth, { NextAuthOptions, Session, User } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import Auth0 from 'next-auth/providers/auth0';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { randomBytes } from 'node:crypto';
 import AuthService from '@/services/AuthService';
+import { AUTH_CONFIG } from '@/utils/constants';
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, token, user }) {
+    jwt: async ({ token, user }) => {
+      return { ...token, ...user };
+    },
+    session({ session, token }) {
       const sessionUpdate: Session = { ...session };
       sessionUpdate.accessToken = token.accessToken as string;
-      return session;
+
+      return sessionUpdate;
     },
   },
   // Configure one or more authentication providers
@@ -24,7 +28,7 @@ const authOptions: NextAuthOptions = {
       clientSecret: process.env.AUTH0_CLIENT_SECRET || '',
     }),
     CredentialsProvider({
-      name: 'Credentials',
+      name: 'credentials',
       credentials: {
         username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
@@ -32,7 +36,6 @@ const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         try {
           const data: { user: User; access_token: string } = await AuthService.login(credentials);
-          console.log('------------------', data);
           return { ...data.user, accessToken: data?.access_token };
         } catch (e) {
           throw new Error('An error has occurred during login request');
@@ -47,21 +50,15 @@ const authOptions: NextAuthOptions = {
   },
   adapter: {},
   session: {
-    strategy: 'database',
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
     updateAge: 24 * 60 * 60, // 24 hours
-    generateSessionToken: () => {
-      return randomBytes(32).toString('hex');
-    },
   },
   pages: {
     signIn: '/login',
     signOut: '/login',
   },
-  secret: 'your_secret',
-  events: {},
-  theme: {},
-  useSecureCookies: true,
+  secret: AUTH_CONFIG.JWR_SECRET,
 };
 
 const handler = NextAuth(authOptions);
