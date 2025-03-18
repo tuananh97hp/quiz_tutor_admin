@@ -5,6 +5,8 @@ import { CirclePlus } from 'lucide-react';
 import { InputSearch } from '@/components/shared/input-search';
 import { PaymentDataTable } from '@/components/(admin)/payment/payment-data-table';
 import { EmptyPaymentState } from '@/components/(admin)/payment/empty-payment-state';
+import { getCurrentAccessToken } from '@/utils/session';
+import PaymentService from '@/services/PaymentService';
 
 export const metadata: Metadata = {
   title: 'Payment Page',
@@ -18,7 +20,15 @@ interface IPaymentPageProps {
   searchParams: ISearchParams;
 }
 
-const PaymentPage = ({ searchParams = {} }: IPaymentPageProps) => {
+const PaymentPage = async ({ searchParams = {} }: IPaymentPageProps) => {
+  const { search = '' } = searchParams;
+  const accessToken = await getCurrentAccessToken();
+
+  let result;
+  if (accessToken) {
+    result = await PaymentService.getListPayment(accessToken, { search });
+  }
+
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-8">
       <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
@@ -46,10 +56,7 @@ const PaymentPage = ({ searchParams = {} }: IPaymentPageProps) => {
         </div>
       </div>
       <div className="mt-4">
-        <PaymentDataTable
-          results={{ data: [], count: 0, currentPage: 0, perPage: 20, totalPages: 0 }}
-        />
-        <EmptyPaymentState />
+        {result?.data.length ? <PaymentDataTable results={result} /> : <EmptyPaymentState />}
       </div>
     </div>
   );

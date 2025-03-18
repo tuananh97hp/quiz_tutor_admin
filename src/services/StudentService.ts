@@ -1,31 +1,62 @@
 import { BaseService } from '@/services/BaseService';
+import { FindResultSet } from '@/types/find-result-set';
+import { IStudent } from '@/types/models';
 
-export class StudentService extends BaseService {
-  fetchDataStudent(accessToken: string, payload?: object) {
-    return this.apiGet('api/students', accessToken, payload);
+class StudentService extends BaseService {
+  async fetchDataStudent(accessToken: string, payload?: object): Promise<FindResultSet<IStudent>> {
+    const result = await this.apiGet('api/workspaces/1/students', accessToken, payload);
+
+    return result.data;
   }
 
-  createStudent(accessToken: string, payload?: object) {
-    return this.apiPost(`api/students`, accessToken, payload);
+  async createStudent(accessToken: string, payload?: object) {
+    const result = await this.apiPost(`api/workspaces/1/students`, accessToken, payload);
+
+    return result.data;
   }
 
-  updateStudent(accessToken: string, studentId: number, payload?: object) {
-    return this.apiPut(`api/students/${studentId}`, accessToken, payload);
+  async updateStudent(accessToken: string, studentId: number, payload?: object) {
+    const result = await this.apiPut(
+      `api/workspaces/1/students/${studentId}`,
+      accessToken,
+      payload,
+    );
+
+    return result.data;
   }
 
-  deleteStudent(accessToken: string, studentId: number) {
-    return this.apiDelete(`api/students/${studentId}`, accessToken);
+  async deleteStudent(accessToken: string, studentId: number) {
+    const result = await this.apiDelete(`api/workspaces/1/students/${studentId}`, accessToken);
+
+    return result.data;
   }
 
-  attendanceStudent(accessToken: string, studentId: number, payload?: object) {
-    return this.apiPost(`api/students/${studentId}/attendance`, accessToken, payload);
+  async attendanceStudent(accessToken: string, studentId: number, payload?: object) {
+    const result = await this.apiPost(
+      `api/workspaces/1/students/${studentId}/attendance`,
+      accessToken,
+      payload,
+    );
+
+    return result.data;
   }
 
-  fetchAttendanceStudent(accessToken: string, studentId: number, payload?: object) {
-    return this.apiGet(`api/students/${studentId}/attendance`, accessToken, payload);
+  async fetchAttendanceStudent(accessToken: string, studentId: number, payload?: object) {
+    const result = await this.apiGet(
+      `api/workspaces/1/students/${studentId}/attendance`,
+      accessToken,
+      payload,
+    );
+
+    return result.data;
   }
 
   async fetchDataDashboard(accessToken: string, payload?: object) {
-    return this.apiGet(`api/dashboard`, accessToken, payload);
+    const result = await this.apiGet(`api/workspaces/1/dashboard`, accessToken, payload);
+
+    return result.data;
   }
 }
+
+const studentService = new StudentService();
+export default studentService;

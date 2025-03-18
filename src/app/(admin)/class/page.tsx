@@ -5,11 +5,13 @@ import { BookCheck, CircleX, BookPlus, List } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TabButton from '@/components/shared/tab-button';
 import Link from 'next/link';
-import { getParamHref } from '@/utils/constants/handle';
+import { getParamHref } from '@/utils/handle';
 import { CLASS_STATUS } from '@/utils/constants';
 import { InputSearch } from '@/components/shared/input-search';
 import { ClassDataTable } from '@/components/(admin)/class/class-data-table';
 import { EmptyClassState } from '@/components/(admin)/class/empty-class-state';
+import { getCurrentAccessToken } from '@/utils/session';
+import classService from '@/services/ClassService';
 
 export const metadata: Metadata = {
   title: 'Class Page',
@@ -45,12 +47,19 @@ const STATUS_TABS = [
   },
 ];
 
-const ClassPage = ({ searchParams = {} }: IClassPageProps) => {
-  const { status = 'open' } = searchParams;
+const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
+  const { status = 'open', search = '' } = searchParams;
+  const accessToken = await getCurrentAccessToken();
 
   const getTabHref = (tab: string) => {
     return getParamHref('/class', searchParams, 'status', tab);
   };
+
+  let result;
+  if (accessToken) {
+    result = await classService.fetchDataClass(accessToken, { status, search });
+  }
+
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-8">
       <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
@@ -89,10 +98,11 @@ const ClassPage = ({ searchParams = {} }: IClassPageProps) => {
         </div>
       </div>
       <div className="mt-4">
-        <ClassDataTable
-          results={{ data: [], count: 0, currentPage: 0, perPage: 20, totalPages: 0 }}
-        />
-        <EmptyClassState status={status} />
+        {result?.data.length ? (
+          <ClassDataTable results={result} />
+        ) : (
+          <EmptyClassState status={status} />
+        )}
       </div>
     </div>
   );

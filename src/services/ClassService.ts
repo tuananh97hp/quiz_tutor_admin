@@ -1,31 +1,54 @@
 import { BaseService } from '@/services/BaseService';
+import { FindResultSet } from '@/types/find-result-set';
+import { IClass, IStudent } from '@/types/models';
 
-export class ClassService extends BaseService {
-  fetchStudentOfClass(accessToken: string, classId: number) {
-    return this.apiGet(`api/classes/${classId}/students`, accessToken);
+class ClassService extends BaseService {
+  async fetchStudentOfClass(accessToken: string, classId: number) {
+    const result = await this.apiGet(`api/workspaces/1/classes/${classId}/students`, accessToken);
+
+    return result.data;
   }
 
-  fetchClassesOpening(accessToken: string, payload?: object) {
-    return this.apiGet(`api/classes-opening`, accessToken, payload);
+  async fetchClassesOpening(accessToken: string, payload?: object) {
+    const result = await this.apiGet(`api/workspaces/1/classes-opening`, accessToken, payload);
+
+    return result.data;
   }
 
-  assignStudentToClass(accessToken: string, classId: number, payload?: object) {
-    return this.apiPost(`api/classes/${classId}/students`, accessToken, payload);
+  async assignStudentToClass(accessToken: string, classId: number, payload?: object) {
+    const result = await this.apiPost(
+      `api/workspaces/1/classes/${classId}/students`,
+      accessToken,
+      payload,
+    );
+
+    return result.data;
   }
 
-  fetchDataClass(accessToken: string, payload?: object) {
-    return this.apiGet('api/classes', accessToken, payload);
+  async fetchDataClass(accessToken: string, payload?: object): Promise<FindResultSet<IClass>> {
+    const result = await this.apiGet('api/workspaces/1/classes', accessToken, payload);
+
+    return result.data;
   }
 
-  createClass(accessToken: string, payload?: object) {
-    return this.apiPost(`api/classes`, accessToken, payload);
+  async createClass(accessToken: string, payload?: object) {
+    const result = await this.apiPost(`api/workspaces/1/classes`, accessToken, payload);
+
+    return result.data;
   }
 
-  updateClass(accessToken: string, classId: number, payload?: object) {
-    return this.apiPut(`api/classes/${classId}`, accessToken, payload);
+  async updateClass(accessToken: string, classId: number, payload?: object) {
+    const result = await this.apiPut(`api/workspaces/1/classes/${classId}`, accessToken, payload);
+
+    return result.data;
   }
 
-  deleteClass(accessToken: string, classId: number) {
-    return this.apiDelete(`api/classes/${classId}`, accessToken);
+  async deleteClass(accessToken: string, classId: number) {
+    const result = await this.apiDelete(`api/workspaces/1/classes/${classId}`, accessToken);
+
+    return result.data;
   }
 }
+
+const classService = new ClassService();
+export default classService;

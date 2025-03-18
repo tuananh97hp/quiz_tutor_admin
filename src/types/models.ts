@@ -1,8 +1,3 @@
-export interface IPayment {
-  id: number;
-  name: string;
-}
-
 export interface IAttendance {
   id: number;
   attendance_date: string;
@@ -40,7 +35,9 @@ export interface IStudent {
   first_name: string;
   last_name: string;
   email: string;
+  phone_number: string;
   birth_date: string;
+  address: string;
   gender: string;
   start_date: string;
   attendances_count?: number;
@@ -50,13 +47,14 @@ export interface IStudent {
 
 export interface IPayment {
   id: number;
-  money: string;
+  money: number;
   student_id: number;
   payment_date: string;
+  payment_attendances_count: number;
   desc: string;
   first_name?: string;
   last_name?: string;
-  student: IStudent;
+  user: IStudent;
   attendances: IAttendance[];
 }
 

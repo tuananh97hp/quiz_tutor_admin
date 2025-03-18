@@ -4,6 +4,7 @@ import Auth0 from 'next-auth/providers/auth0';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import AuthService from '@/services/AuthService';
 import { AUTH_CONFIG } from '@/utils/constants';
+import { AxiosError } from 'axios';
 
 export const authOptions: NextAuthOptions = {
   callbacks: {
@@ -38,7 +39,7 @@ export const authOptions: NextAuthOptions = {
           const data: { user: User; access_token: string } = await AuthService.login(credentials);
           return { ...data.user, accessToken: data?.access_token };
         } catch (e) {
-          throw new Error('An error has occurred during login request');
+          return null;
         }
       },
     }),

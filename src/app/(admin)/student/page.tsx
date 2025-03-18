@@ -5,11 +5,13 @@ import { UserRoundPlus, CircleCheck, Loader, UserRoundX, List } from 'lucide-rea
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TabButton from '@/components/shared/tab-button';
 import Link from 'next/link';
-import { getParamHref } from '@/utils/constants/handle';
+import { getParamHref } from '@/utils/handle';
 import { STUDENT_STATUS } from '@/utils/constants';
 import { InputSearch } from '@/components/shared/input-search';
 import { StudentDataTable } from '@/components/(admin)/students/student-data-table';
 import { EmptyStudentState } from '@/components/(admin)/students/empty-student-state';
+import { getCurrentAccessToken } from '@/utils/session';
+import StudentService from '@/services/StudentService';
 
 export const metadata: Metadata = {
   title: 'Student Page',
@@ -51,12 +53,18 @@ const STATUS_TABS = [
   },
 ];
 
-const StudentPage = ({ searchParams = {} }: IStudentPageProps) => {
-  const { status = 'active' } = searchParams;
+const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
+  const { status = 'active', search = '' } = searchParams;
+  const accessToken = await getCurrentAccessToken();
 
   const getTabHref = (tab: string) => {
     return getParamHref('student', searchParams, 'status', tab);
   };
+
+  let result;
+  if (accessToken) {
+    result = await StudentService.fetchDataStudent(accessToken, { status, search });
+  }
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-8">
       <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
@@ -95,10 +103,11 @@ const StudentPage = ({ searchParams = {} }: IStudentPageProps) => {
         </div>
       </div>
       <div className="mt-4">
-        <StudentDataTable
-          results={{ data: [], count: 0, currentPage: 0, perPage: 20, totalPages: 0 }}
-        />
-        <EmptyStudentState status={status} />
+        {result?.data.length ? (
+          <StudentDataTable results={result} />
+        ) : (
+          <EmptyStudentState status={status} />
+        )}
       </div>
     </div>
   );

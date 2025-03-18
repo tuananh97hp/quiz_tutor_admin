@@ -7,13 +7,55 @@ import { IClass } from '@/types/models';
 import { FindResultSet } from '@/types/find-result-set';
 import { useUpdateSearchParams } from '@/hooks/use-update-search-params';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
-import { Loader } from 'lucide-react';
+import { CalendarCheck, Edit, Loader, MoreHorizontal, PencilRuler, Users } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { TableExpand } from '@/components/shared/table-expand';
+import { Badge } from '@/components/ui/badge';
+import { DAY_OF_WEEK } from '@/utils/constants/date';
 
 export type IClassDataTableResult = FindResultSet<IClass>;
 
 interface IClassTableProps {
   results: IClassDataTableResult;
 }
+interface IClassDataTableAction {
+  classItem: IClass;
+}
+
+const ClassDataTableAction = ({ classItem }: IClassDataTableAction) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger data-testid="document-table-action-btn">
+        <MoreHorizontal className="text-muted-foreground h-5 w-5" />
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent className="w-52" align="start" forceMount>
+        <DropdownMenuLabel>Action</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <PencilRuler className="mr-2 h-4 w-4" /> Change Status
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Edit className="mr-2 h-4 w-4" /> Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Users className="mr-2 h-4 w-4" /> Students
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <CalendarCheck className="mr-2 h-4 w-4" />
+          Attendance
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 export const ClassDataTable = ({ results }: IClassTableProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isPending, startTransition] = React.useTransition();
@@ -22,51 +64,54 @@ export const ClassDataTable = ({ results }: IClassTableProps) => {
   const columns = React.useMemo(() => {
     return [
       {
-        accessorKey: 'code',
+        accessorKey: 'id',
         header: 'Code',
-      },
-      {
-        header: 'Name',
-        cell: 'Name',
-      },
-      {
-        id: 'role',
-        header: 'Job',
-        size: 140,
-      },
-      {
-        id: 'phone',
-        header: 'Phone',
-      },
-      {
-        id: 'email',
-        header: 'Email',
-      },
-      {
-        id: 'scoring',
-        header: 'AI Scoring',
+        size: 100,
         cell: ({ row }) => {
-          return <>{row}</>;
+          return (
+            <a
+              href="#"
+              className="truncate md:max-w-[10rem] hover:underline underline-offset-2 font-bold"
+            >
+              {row.original.id}
+            </a>
+          );
         },
       },
       {
-        header: 'Status',
-        accessorKey: 'status',
+        header: 'Class Name',
         cell: ({ row }) => {
-          return <>{row}</>;
+          return (
+            <a
+              href="#"
+              className="truncate md:max-w-[10rem] hover:underline underline-offset-2 font-bold"
+            >
+              {row.original.name}
+            </a>
+          );
         },
-        size: 140,
       },
       {
-        id: 'recipient',
-        header: 'Recipient',
-        accessorKey: 'recipient',
-        cell: ({ row }) => <>{row}</>,
+        header: 'Start Date',
+        cell: ({ row }) => {
+          return (
+            <Badge variant="default">
+              <span className="truncate md:max-w-[10rem]">{row.original.start_date || '-'}</span>
+            </Badge>
+          );
+        },
       },
       {
         header: 'Actions',
-        cell: ({ row }) => <>return null</>,
-        size: 140,
+        cell: ({ row }) => <ClassDataTableAction classItem={row.original} />,
+        size: 70,
+      },
+      {
+        header: 'Expand',
+        cell: ({ row }) => {
+          return <TableExpand isExpand={row.getIsExpanded()} onClick={row.toggleExpanded} />;
+        },
+        size: 50,
       },
     ] satisfies DataTableColumnDef<(typeof results)['data'][number]>[];
   }, []);
@@ -93,14 +138,40 @@ export const ClassDataTable = ({ results }: IClassTableProps) => {
       <DataTable
         columns={columns}
         data={results.data}
-        perPage={results.perPage}
-        currentPage={results.currentPage}
-        totalPages={results.totalPages}
+        perPage={results.meta.per_page}
+        currentPage={results.meta.current_page}
+        totalPages={results.meta.total}
         onPaginationChange={onPaginationChange}
         renderSubComponent={({ row }) => {
           return (
-            <div>
-              <p className="p-4 text-center text-gray-500">No matching recipients found.</p>
+            <div className="flex items-center gap-y-1 py-3 gap-x-3 pl-10">
+              <div className="text-foreground/50 font-medium">Schedule: &nbsp;</div>
+              <div className="flex flex-col">
+                {row.original.schedules.map((schedule, index) => (
+                  <div key={index} className="flex gap-x-3">
+                    <div className="flex items-center gap-y-1">
+                      <span className="text-foreground/50 text-xs font-medium">Start: &nbsp;</span>
+                      <div className="text-foreground/50 text-sm font-medium">
+                        {schedule.start_time}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-y-1">
+                      <span className="text-foreground/50 text-xs font-medium">End: &nbsp;</span>
+                      <div className="text-foreground/50 text-sm font-medium">
+                        {schedule.end_time}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-y-1">
+                      <span className="text-foreground/50 text-xs font-medium">
+                        Day of week: &nbsp;
+                      </span>
+                      <div className="text-foreground/50 text-sm font-medium">
+                        {DAY_OF_WEEK[schedule.day_of_week]}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           );
         }}

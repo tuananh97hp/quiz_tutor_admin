@@ -1,14 +1,25 @@
 import { BaseService } from '@/services/BaseService';
+import { FindResultSet } from '@/types/find-result-set';
+import { IPayment } from '@/types/models';
 
-export class PaymentService extends BaseService {
-  getPayment(accessToken: string, paymentId: number) {
-    return this.apiGet(`api/payments/${paymentId}`, accessToken);
+class PaymentService extends BaseService {
+  async getPayment(accessToken: string, paymentId: number) {
+    const result = await this.apiGet(`api/workspaces/1/payments/${paymentId}`, accessToken);
+
+    return result.data;
   }
 
-  getListPayment(accessToken: string, payload?: object) {
-    return this.apiGet('api/payments', accessToken, payload);
+  async getListPayment(accessToken: string, payload?: object): Promise<FindResultSet<IPayment>> {
+    const result = await this.apiGet('api/workspaces/1/payments', accessToken, payload);
+
+    return result.data;
   }
-  createStudentPayment(accessToken: string, payload?: object) {
-    return this.apiPost(`api/payments`, accessToken, payload);
+  async createStudentPayment(accessToken: string, payload?: object) {
+    const result = await this.apiPost(`api/workspaces/1/payments`, accessToken, payload);
+
+    return result.data;
   }
 }
+
+const paymentService = new PaymentService();
+export default paymentService;

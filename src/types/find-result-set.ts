@@ -1,7 +1,10 @@
 export type FindResultSet<T> = {
   data: T extends Array<unknown> ? T : T[];
-  count: number;
-  currentPage: number;
-  perPage: number;
-  totalPages: number;
+  meta: {
+    count: number;
+    last_page: number;
+    current_page: number;
+    per_page: number;
+    total: number;
+  };
 };

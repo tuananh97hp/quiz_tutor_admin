@@ -1,14 +1,23 @@
 import { BaseService } from '@/services/BaseService';
 
-export class AttendanceService extends BaseService {
-  getStudentAttendance(accessToken: string, payload?: object) {
-    return this.apiGet('api/attendance-student', accessToken, payload);
+class AttendanceService extends BaseService {
+  async getStudentAttendance(accessToken: string, payload?: object) {
+    const result = await this.apiGet('api/attendance-student', accessToken, payload);
+
+    return result.data;
   }
-  updateStudentAttendance(accessToken: string, payload?: object) {
-    return this.apiPut('api/attendance-student', accessToken, payload);
+  async updateStudentAttendance(accessToken: string, payload?: object) {
+    const result = await this.apiPut('api/attendance-student', accessToken, payload);
+
+    return result.data;
   }
 
-  deleteAttendance(accessToken: string, attendanceId: number) {
-    return this.apiDelete(`api/attendances/${attendanceId}`, accessToken);
+  async deleteAttendance(accessToken: string, attendanceId: number) {
+    const result = await this.apiDelete(`api/attendances/${attendanceId}`, accessToken);
+
+    return result.data;
   }
 }
+
+const attendanceService = new AttendanceService();
+export default attendanceService;

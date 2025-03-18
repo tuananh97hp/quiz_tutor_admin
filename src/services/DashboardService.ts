@@ -1,7 +1,13 @@
 import { BaseService } from '@/services/BaseService';
 
-export class DashboardService extends BaseService {
+class DashboardService extends BaseService {
   async fetchDashboardData(accessToken: string, payload?: object) {
-    return this.apiGet('api/students', accessToken);
+    const result = await this.apiGet('api/students', accessToken);
+
+    return result.data;
   }
 }
+
+const dashboardService = new DashboardService();
+
+export default dashboardService;

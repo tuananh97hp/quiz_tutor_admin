@@ -21,18 +21,24 @@ class AuthService extends BaseService {
     return await this.apiPost('api/logout', accessToken);
   }
 
-  fetchDataProfile(accessToken: string) {
-    return this.apiGet('api/user', accessToken);
+  async fetchDataProfile(accessToken: string) {
+    const result = await this.apiGet('api/user', accessToken);
+
+    return result.data;
   }
 
-  refreshToken(accessToken: string) {
-    return this.apiPost('api/refresh', accessToken);
+  async refreshToken(accessToken: string) {
+    const result = await this.apiPost('api/refresh', accessToken);
+
+    return result.data;
   }
 
-  changePassword(accessToken: string, payload?: object) {
-    return this.apiPost(`api/change-password`, accessToken, payload);
+  async changePassword(accessToken: string, payload?: object) {
+    const result = await this.apiPost(`api/change-password`, accessToken, payload);
+
+    return result.data;
   }
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default new AuthService();
+const authService = new AuthService();
+export default authService;

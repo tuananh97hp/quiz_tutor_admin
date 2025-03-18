@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 const LoginForm = ({}: ILoginFormProps) => {
   const searchParams = useSearchParams();
-
+  const error = searchParams.get('error');
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,6 +82,13 @@ const LoginForm = ({}: ILoginFormProps) => {
             >
               Forgot your password?
             </a>
+          </div>
+          <div>
+            {error && (
+              <p className="text-sm text-destructive">
+                The email or password provided is incorrect
+              </p>
+            )}
           </div>
           <Button type="submit" className="dark:bg-primary dark:hover:opacity-90 w-full">
             Login
