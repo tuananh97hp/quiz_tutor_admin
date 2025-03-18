@@ -7,7 +7,15 @@ import { IPayment } from '@/types/models';
 import { FindResultSet } from '@/types/find-result-set';
 import { useUpdateSearchParams } from '@/hooks/use-update-search-params';
 import { DataTablePagination } from '@/components/ui/data-table-pagination';
-import { CalendarCheck, Edit, HandCoins, Loader, MoreHorizontal, PencilRuler } from 'lucide-react';
+import {
+  CalendarCheck,
+  Edit,
+  HandCoins,
+  Loader,
+  MoreHorizontal,
+  PencilRuler,
+  Trash,
+} from 'lucide-react';
 import { formatMoney } from '@/utils/handle';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -40,16 +48,10 @@ const PaymentDataTableAction = ({ payment }: IPaymentDataTableAction) => {
         <DropdownMenuLabel>Action</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <PencilRuler className="mr-2 h-4 w-4" /> Change Status
-        </DropdownMenuItem>
-        <DropdownMenuItem>
           <Edit className="mr-2 h-4 w-4" /> Edit
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <HandCoins className="mr-2 h-4 w-4" /> Payment
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CalendarCheck className="mr-2 h-4 w-4" />
+          <Trash className="mr-2 h-4 w-4" />
           Attendance
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -146,7 +148,7 @@ export const PaymentDataTable = ({ results }: IPaymentTableProps) => {
         onPaginationChange={onPaginationChange}
         renderSubComponent={({ row }) => {
           return (
-            <div className="flex items-center gap-x-10 border-b py-3 pr-5 pl-5 last:border-b-0">
+            <div className="flex items-center gap-x-20 border-b py-3 pr-5 pl-10 last:border-b-0">
               <div className="flex flex-col gap-y-1">
                 <span className="text-foreground/50 text-xs font-medium">Parent date</span>
                 <div className="text-foreground/50 text-sm font-medium">

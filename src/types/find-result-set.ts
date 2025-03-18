@@ -8,3 +8,7 @@ export type FindResultSet<T> = {
     total: number;
   };
 };
+
+export type ListFindResultSet<T> = {
+  data: T extends Array<unknown> ? T : T[];
+};

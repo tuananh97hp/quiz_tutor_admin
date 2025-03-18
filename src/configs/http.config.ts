@@ -5,7 +5,6 @@ import axiosRequestConfig from '@/configs/axios.config';
 import { HTTP_CODE } from '@/utils/constants/http';
 import { STORAGE_KEYS } from '@/utils/constants';
 import { getCookie } from '@/utils/cookies';
-import { signOut } from 'next-auth/react';
 
 /**
  *  Documents Interceptors: https://axios-http.com/docs/interceptors
@@ -25,7 +24,7 @@ http.interceptors.response.use(
   (res) => res,
   async (error) => {
     if (error?.response?.status === HTTP_CODE.UNAUTHORIZED) {
-      await signOut({ callbackUrl: '/' });
+      // TODO: logout
     } else {
       return Promise.reject(error);
     }

@@ -19,6 +19,7 @@ import {
 import { TableExpand } from '@/components/shared/table-expand';
 import { Badge } from '@/components/ui/badge';
 import { DAY_OF_WEEK } from '@/utils/constants/date';
+import { formatMoney } from '@/utils/handle';
 
 export type IClassDataTableResult = FindResultSet<IClass>;
 
@@ -144,33 +145,47 @@ export const ClassDataTable = ({ results }: IClassTableProps) => {
         onPaginationChange={onPaginationChange}
         renderSubComponent={({ row }) => {
           return (
-            <div className="flex items-center gap-y-1 py-3 gap-x-3 pl-10">
-              <div className="text-foreground/50 font-medium">Schedule: &nbsp;</div>
-              <div className="flex flex-col">
-                {row.original.schedules.map((schedule, index) => (
-                  <div key={index} className="flex gap-x-3">
-                    <div className="flex items-center gap-y-1">
-                      <span className="text-foreground/50 text-xs font-medium">Start: &nbsp;</span>
-                      <div className="text-foreground/50 text-sm font-medium">
-                        {schedule.start_time}
+            <div className="flex items-center gap-y-1 py-3 gap-x-20 pl-10">
+              <div className="flex items-center gap-x-3">
+                <div className="text-foreground/50 font-medium">Schedule: &nbsp;</div>
+                <div className="flex flex-col">
+                  {row.original.schedules.map((schedule, index) => (
+                    <div key={index} className="flex gap-x-3">
+                      <div className="flex items-center gap-y-1">
+                        <span className="text-foreground/50 text-xs font-medium">
+                          Start: &nbsp;
+                        </span>
+                        <div className="text-foreground/50 text-sm font-medium">
+                          {schedule.start_time}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-y-1">
+                        <span className="text-foreground/50 text-xs font-medium">End: &nbsp;</span>
+                        <div className="text-foreground/50 text-sm font-medium">
+                          {schedule.end_time}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-y-1">
+                        <span className="text-foreground/50 text-xs font-medium">
+                          Day of week: &nbsp;
+                        </span>
+                        <div className="text-foreground/50 text-sm font-medium">
+                          {DAY_OF_WEEK[schedule.day_of_week]}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-y-1">
-                      <span className="text-foreground/50 text-xs font-medium">End: &nbsp;</span>
-                      <div className="text-foreground/50 text-sm font-medium">
-                        {schedule.end_time}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-y-1">
-                      <span className="text-foreground/50 text-xs font-medium">
-                        Day of week: &nbsp;
-                      </span>
-                      <div className="text-foreground/50 text-sm font-medium">
-                        {DAY_OF_WEEK[schedule.day_of_week]}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center gap-x-3">
+                <div className="text-foreground/50 font-medium">Fee: &nbsp;</div>
+                <div className="flex flex-col">
+                  <Badge variant="warning">
+                    <span className="truncate md:max-w-[10rem]">
+                      {formatMoney(row.original.fee)}đ
+                    </span>
+                  </Badge>
+                </div>
               </div>
             </div>
           );

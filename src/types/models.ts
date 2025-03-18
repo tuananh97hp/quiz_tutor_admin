@@ -8,6 +8,7 @@ export interface IClass {
   id: number;
   name: string;
   status: string;
+  fee: number;
   start_date: string;
   end_date?: string;
   schedules: ISchedule[];

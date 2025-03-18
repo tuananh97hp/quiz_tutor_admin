@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useMemo } from 'react';
 import { IconMenu } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -9,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface TopNavProps extends React.HTMLAttributes<HTMLElement> {
   links: {
@@ -20,6 +23,16 @@ interface TopNavProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export function TopNav({ className, links, ...props }: TopNavProps) {
+  const pathname = usePathname();
+  const linksPrepare = useMemo(
+    () =>
+      links.map((link) => ({
+        ...link,
+        isActive: (pathname === '/' || link.href !== '/') && pathname.startsWith(link.href),
+      })),
+    [links, pathname],
+  );
+
   return (
     <>
       <div className="md:hidden">
@@ -30,7 +43,7 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="bottom" align="start">
-            {links.map(({ title, href, isActive, disabled }) => (
+            {linksPrepare.map(({ title, href, isActive, disabled }) => (
               <DropdownMenuItem key={`${title}-${href}`} asChild>
                 <Link
                   href={href}
@@ -50,7 +63,7 @@ export function TopNav({ className, links, ...props }: TopNavProps) {
         className={cn('hidden items-center space-x-4 md:flex lg:space-x-6', className)}
         {...props}
       >
-        {links.map(({ title, href, isActive, disabled }) => (
+        {linksPrepare.map(({ title, href, isActive, disabled }) => (
           <Link
             key={`${title}-${href}`}
             href={href}

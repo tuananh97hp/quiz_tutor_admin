@@ -36,6 +36,7 @@ const LoginForm = ({}: ILoginFormProps) => {
       password: '',
     },
   });
+  const isSubmitting = form.formState.isSubmitting;
   async function onSubmit(data: z.infer<typeof formSchema>) {
     const callbackUrl = searchParams.get('callbackUrl') || '/';
     await signIn('credentials', {
@@ -90,7 +91,11 @@ const LoginForm = ({}: ILoginFormProps) => {
               </p>
             )}
           </div>
-          <Button type="submit" className="dark:bg-primary dark:hover:opacity-90 w-full">
+          <Button
+            type="submit"
+            className="dark:bg-primary dark:hover:opacity-90 w-full"
+            loading={isSubmitting}
+          >
             Login
           </Button>
         </div>

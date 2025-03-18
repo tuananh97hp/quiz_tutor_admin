@@ -5,21 +5,33 @@ import { UserRoundPlus, LayoutGrid, LayoutList } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InputSearch } from '@/components/shared/input-search';
 import { EmptyAttendanceState } from '@/components/(admin)/attendance/empty-attendance-state';
+import { DatePicker } from '@/components/ui/date-picker';
+import { getCurrentAccessToken } from '@/utils/session';
+import AttendanceService from '@/services/AttendanceService';
+import { AttendanceClassList } from '@/components/(admin)/attendance/attendance-class-list';
 
 export const metadata: Metadata = {
   title: 'Attendance Page',
 };
 
 interface ISearchParams {
-  status?: string;
   search?: string;
+  date?: string;
 }
 
 interface IAttendancePageProps {
   searchParams: ISearchParams;
 }
 
-const AttendancePage = ({ searchParams = {} }: IAttendancePageProps) => {
+const AttendancePage = async ({ searchParams = {} }: IAttendancePageProps) => {
+  const { date = '', search = '' } = searchParams;
+  const accessToken = await getCurrentAccessToken();
+
+  let result;
+  if (accessToken) {
+    result = await AttendanceService.getClassesAttendance(accessToken, { date, search });
+  }
+
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-8">
       <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
@@ -34,7 +46,7 @@ const AttendancePage = ({ searchParams = {} }: IAttendancePageProps) => {
           <UserRoundPlus /> Create Attendance
         </Button>
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
-          <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
+          <div className="-m-1 flex flex-wrap gap-x-4 gap-y-4 overflow-hidden p-1">
             <Tabs defaultValue="grid" className="w-full">
               <div className="flex justify-end w-full">
                 <TabsList>
@@ -51,7 +63,9 @@ const AttendancePage = ({ searchParams = {} }: IAttendancePageProps) => {
               <div className="flex-grow basis-64">
                 <InputSearch initialValue={searchParams.search || ''} label="classes" />
               </div>
-              <div className="flex-grow basis-64" />
+              <div className="flex-grow basis-64">
+                <DatePicker />
+              </div>
               <div className="flex-grow basis-64" />
               <div className="flex-grow basis-64" />
             </div>
@@ -59,7 +73,7 @@ const AttendancePage = ({ searchParams = {} }: IAttendancePageProps) => {
         </div>
       </div>
       <div className="mt-4">
-        <EmptyAttendanceState />
+        {result?.data.length ? <AttendanceClassList results={result} /> : <EmptyAttendanceState />}
       </div>
     </div>
   );
