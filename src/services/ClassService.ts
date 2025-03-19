@@ -1,6 +1,6 @@
 import { BaseService } from '@/services/BaseService';
 import { FindResultSet } from '@/types/find-result-set';
-import { IClass, IStudent } from '@/types/models';
+import { IClass, IClassSummary } from '@/types/models';
 
 class ClassService extends BaseService {
   async fetchStudentOfClass(accessToken: string, classId: number) {
@@ -13,6 +13,12 @@ class ClassService extends BaseService {
     const result = await this.apiGet(`api/workspaces/1/classes-opening`, accessToken, payload);
 
     return result.data;
+  }
+
+  async getClassSummary(accessToken: string): Promise<IClassSummary> {
+    const result = await this.apiGet('api/workspaces/1/classes/summary', accessToken);
+
+    return result.data.data;
   }
 
   async assignStudentToClass(accessToken: string, classId: number, payload?: object) {

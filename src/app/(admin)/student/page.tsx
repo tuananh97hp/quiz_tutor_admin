@@ -12,6 +12,7 @@ import { StudentDataTable } from '@/components/(admin)/students/student-data-tab
 import { EmptyStudentState } from '@/components/(admin)/students/empty-student-state';
 import { getCurrentAccessToken } from '@/utils/session';
 import StudentService from '@/services/StudentService';
+import { IStudentSummary } from '@/types/models';
 
 export const metadata: Metadata = {
   title: 'Student Page',
@@ -32,24 +33,28 @@ const STATUS_TABS = [
     label: 'Processing',
     icon: Loader,
     color: 'text-blue-500',
+    summary_key: 'processing_students',
   },
   {
     value: STUDENT_STATUS.ACTIVE,
     label: 'Active',
     icon: CircleCheck,
     color: 'text-green-500',
+    summary_key: 'active_students',
   },
   {
     value: STUDENT_STATUS.INACTIVE,
     label: 'Inactive',
     icon: UserRoundX,
     color: 'text-red-500',
+    summary_key: 'inactive_students',
   },
   {
     value: 'all',
     label: 'All',
     icon: List,
     color: 'text-gray-500',
+    summary_key: 'total_students',
   },
 ];
 
@@ -62,8 +67,15 @@ const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
   };
 
   let result;
+  let resultSummary: IStudentSummary = {
+    processing_students: 0,
+    active_students: 0,
+    inactive_students: 0,
+    total_students: 0,
+  };
   if (accessToken) {
     result = await StudentService.fetchDataStudent(accessToken, { status, search });
+    resultSummary = await StudentService.getStudentSummary(accessToken);
   }
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-8">
@@ -85,7 +97,12 @@ const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
                 {STATUS_TABS.map((tab) => (
                   <TabsTrigger key={tab.value} value={tab.value} className="min-w-[60px]" asChild>
                     <Link href={getTabHref(tab.value)}>
-                      <TabButton icon={tab.icon} label={tab.label} count={2} color={tab.color} />
+                      <TabButton
+                        icon={tab.icon}
+                        label={tab.label}
+                        count={resultSummary[tab.summary_key as keyof IStudentSummary]}
+                        color={tab.color}
+                      />
                     </Link>
                   </TabsTrigger>
                 ))}

@@ -5,7 +5,7 @@ import { UserRoundPlus, LayoutGrid, LayoutList } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InputSearch } from '@/components/shared/input-search';
 import { EmptyAttendanceState } from '@/components/(admin)/attendance/empty-attendance-state';
-import { DatePicker } from '@/components/ui/date-picker';
+import { DatePickerSearch } from '@/components/ui/date-picker-search';
 import { getCurrentAccessToken } from '@/utils/session';
 import AttendanceService from '@/services/AttendanceService';
 import { AttendanceClassList } from '@/components/(admin)/attendance/attendance-class-list';
@@ -29,6 +29,7 @@ const AttendancePage = async ({ searchParams = {} }: IAttendancePageProps) => {
 
   let result;
   if (accessToken) {
+    console.log(date);
     result = await AttendanceService.getClassesAttendance(accessToken, { date, search });
   }
 
@@ -64,7 +65,7 @@ const AttendancePage = async ({ searchParams = {} }: IAttendancePageProps) => {
                 <InputSearch initialValue={searchParams.search || ''} label="classes" />
               </div>
               <div className="flex-grow basis-64">
-                <DatePicker />
+                <DatePickerSearch />
               </div>
               <div className="flex-grow basis-64" />
               <div className="flex-grow basis-64" />

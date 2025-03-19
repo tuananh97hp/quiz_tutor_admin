@@ -12,6 +12,7 @@ import { ClassDataTable } from '@/components/(admin)/class/class-data-table';
 import { EmptyClassState } from '@/components/(admin)/class/empty-class-state';
 import { getCurrentAccessToken } from '@/utils/session';
 import classService from '@/services/ClassService';
+import { IClassSummary } from '@/types/models';
 
 export const metadata: Metadata = {
   title: 'Class Page',
@@ -32,18 +33,21 @@ const STATUS_TABS = [
     label: 'Open',
     icon: BookCheck,
     color: 'text-green-500',
+    summary_key: 'open_classes',
   },
   {
     value: CLASS_STATUS.CLOSE,
     label: 'Close',
     icon: CircleX,
     color: 'text-red-500',
+    summary_key: 'close_classes',
   },
   {
     value: 'all',
     label: 'All',
     icon: List,
     color: 'text-gray-500',
+    summary_key: 'total_classes',
   },
 ];
 
@@ -56,8 +60,14 @@ const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
   };
 
   let result;
+  let resultSummary: IClassSummary = {
+    open_classes: 0,
+    close_classes: 0,
+    total_classes: 0,
+  };
   if (accessToken) {
     result = await classService.fetchDataClass(accessToken, { status, search });
+    resultSummary = await classService.getClassSummary(accessToken);
   }
 
   return (
@@ -80,7 +90,12 @@ const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
                 {STATUS_TABS.map((tab) => (
                   <TabsTrigger key={tab.value} value={tab.value} className="min-w-[60px]" asChild>
                     <Link href={getTabHref(tab.value)}>
-                      <TabButton icon={tab.icon} label={tab.label} count={2} color={tab.color} />
+                      <TabButton
+                        icon={tab.icon}
+                        label={tab.label}
+                        count={resultSummary[tab.summary_key as keyof IClassSummary] || 0}
+                        color={tab.color}
+                      />
                     </Link>
                   </TabsTrigger>
                 ))}

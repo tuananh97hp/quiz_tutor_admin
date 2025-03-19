@@ -14,6 +14,12 @@ export interface IClass {
   schedules: ISchedule[];
 }
 
+export interface IClassSummary {
+  total_classes: number;
+  open_classes: number;
+  close_classes: number;
+}
+
 interface ISchedule {
   day_of_week: number;
   start_time: string;
@@ -44,6 +50,13 @@ export interface IStudent {
   attendances_count?: number;
   end_date?: string;
   avatar?: string;
+}
+
+export interface IStudentSummary {
+  total_students: number;
+  active_students: number;
+  inactive_students: number;
+  processing_students: number;
 }
 
 export interface IPayment {

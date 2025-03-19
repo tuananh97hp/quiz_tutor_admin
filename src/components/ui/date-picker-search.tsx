@@ -96,7 +96,7 @@ const useDateParams: UseDateParams = (defaultDate) => {
   return [dateParams, updateDateParams];
 };
 
-export function DatePicker({
+export function DatePickerSearch({
   defaultDate,
   placeholder = 'Pick a date',
   triggerVariant = 'outline',
