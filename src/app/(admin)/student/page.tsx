@@ -87,8 +87,10 @@ const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
 
           <h1 className="text-4xl font-semibold">Student List</h1>
         </div>
-        <Button>
-          <UserRoundPlus /> Create Student
+        <Button asChild>
+          <Link href="/student/create">
+            <UserRoundPlus /> Create Student
+          </Link>
         </Button>
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
