@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { ChevronLeftCircle } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { StudentForm } from '@/components/(admin)/students/student-form';
+import React from 'react';
 
 const CreateStudentPage = () => {
   return (
@@ -20,7 +22,9 @@ const CreateStudentPage = () => {
 
           <h1 className="text-4xl font-semibold">Student Create</h1>
         </div>
-        <div className="flex w-full flex-col gap-4 overflow-hidden p-1">content</div>
+        <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
+          <StudentForm />
+        </div>
       </div>
     </div>
   );
