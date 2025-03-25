@@ -22,7 +22,7 @@ const CreateStudentPage = () => {
 
           <h1 className="text-4xl font-semibold">Student Create</h1>
         </div>
-        <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
+        <div className="flex w-full flex-col gap-4 p-1">
           <StudentForm />
         </div>
       </div>

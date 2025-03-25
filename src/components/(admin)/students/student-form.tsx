@@ -20,35 +20,23 @@ import { UserPlus } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
-  first_name: z.string().nonempty(),
-  last_name: z.string(),
-  email: z.string().email(),
-  phone_number: z.string().min(10).max(11),
-  birth_date: z.string(),
-  address: z.string(),
+  first_name: z.string(),
+  last_name: z.string().optional(),
+  email: z.string().email().optional(),
+  phone_number: z.string().min(10).max(11).optional(),
+  birth_date: z.string().optional(),
+  address: z.string().optional(),
   gender: z.string().nonempty(),
   start_date: z.string().nonempty(),
-  description: z.string(),
-  parent_name: z.string(),
-  parent_phone_number: z.string().min(10).max(11),
+  description: z.string().optional(),
+  parent_name: z.string().optional(),
+  parent_phone_number: z.string().min(10).max(11).optional(),
 });
 
 export const StudentForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-      first_name: '',
-      last_name: '',
-      phone_number: '',
-      birth_date: '',
-      address: '',
-      gender: '',
-      start_date: '',
-      description: '',
-      parent_name: '',
-      parent_phone_number: '',
-    },
+    defaultValues: {},
   });
 
   const isSubmitting = form.formState.isSubmitting;
@@ -61,11 +49,14 @@ export const StudentForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid w-full grid-cols-12 gap-8">
-            <div className="relative col-span-12 lg:col-span-8 xl:col-span-7">
+            <div className="relative col-span-12 lg:col-span-8 xl:col-span-7 h-[200vh]">
               <Card className="relative border-2 rounded-xl before:rounded-xl bg-background">
                 <CardHeader>
                   <CardTitle className="text-2xl">Student Information</CardTitle>
-                  <CardDescription> *: is required</CardDescription>
+                  <CardDescription>
+                    Fields marked with <span className="text-red-500">*</span> are required. Please
+                    fill them in before submitting.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="p-2 pb-5">
                   <div className="mb-4">
@@ -103,6 +94,19 @@ export const StudentForm = () => {
                     />
                     <FormField
                       control={form.control}
+                      name="gender"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Gender</FormLabel>
+                          <FormControl>
+                            <Input placeholder="gender" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
@@ -116,12 +120,12 @@ export const StudentForm = () => {
                     />
                     <FormField
                       control={form.control}
-                      name="gender"
+                      name="start_date"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gender</FormLabel>
+                          <FormLabel required>Start Date</FormLabel>
                           <FormControl>
-                            <Input placeholder="gender" {...field} />
+                            <Input placeholder="start date" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -166,19 +170,21 @@ export const StudentForm = () => {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name="start_date"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Start Date</FormLabel>
-                          <FormControl>
-                            <Input placeholder="start date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="col-span-2">
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea placeholder="description" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                   <div className="mt-6 mb-4">
                     <span className="text-foreground/50 text-xs font-bold">Parent Fields</span>
@@ -212,21 +218,6 @@ export const StudentForm = () => {
                         </FormItem>
                       )}
                     />
-                    <div className="col-span-2">
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                              <Textarea placeholder="description" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
                   </div>
                 </CardContent>
               </Card>
