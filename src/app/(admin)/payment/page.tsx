@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { CirclePlus } from 'lucide-react';
 import { InputSearch } from '@/components/shared/input-search';
 import { PaymentDataTable } from '@/components/(admin)/payment/payment-data-table';
-import { EmptyPaymentState } from '@/components/(admin)/payment/empty-payment-state';
+import { PaymentEmptyState } from '@/components/(admin)/payment/payment-empty-state';
 import { getCurrentAccessToken } from '@/utils/session';
 import PaymentService from '@/services/PaymentService';
 
@@ -56,7 +56,7 @@ const PaymentPage = async ({ searchParams = {} }: IPaymentPageProps) => {
         </div>
       </div>
       <div className="mt-4">
-        {result?.data.length ? <PaymentDataTable results={result} /> : <EmptyPaymentState />}
+        {result?.data.length ? <PaymentDataTable results={result} /> : <PaymentEmptyState />}
       </div>
     </div>
   );

@@ -28,6 +28,16 @@ class StudentService extends BaseService {
     return result.data;
   }
 
+  async updateStudentStatus(accessToken: string, studentId: number, payload?: object) {
+    const result = await this.apiPut(
+      `api/workspaces/1/students/${studentId}/update-status`,
+      accessToken,
+      payload,
+    );
+
+    return result.data;
+  }
+
   async deleteStudent(accessToken: string, studentId: number) {
     const result = await this.apiDelete(`api/workspaces/1/students/${studentId}`, accessToken);
 

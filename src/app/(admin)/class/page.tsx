@@ -9,7 +9,7 @@ import { getParamHref } from '@/utils/handle';
 import { CLASS_STATUS } from '@/utils/constants';
 import { InputSearch } from '@/components/shared/input-search';
 import { ClassDataTable } from '@/components/(admin)/class/class-data-table';
-import { EmptyClassState } from '@/components/(admin)/class/empty-class-state';
+import { ClassEmptyState } from '@/components/(admin)/class/class-empty-state';
 import { getCurrentAccessToken } from '@/utils/session';
 import classService from '@/services/ClassService';
 import { IClassSummary } from '@/types/models';
@@ -116,7 +116,7 @@ const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
         {result?.data.length ? (
           <ClassDataTable results={result} />
         ) : (
-          <EmptyClassState status={status} />
+          <ClassEmptyState status={status} />
         )}
       </div>
     </div>

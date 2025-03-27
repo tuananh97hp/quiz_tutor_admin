@@ -9,7 +9,7 @@ import { getParamHref } from '@/utils/handle';
 import { STUDENT_STATUS } from '@/utils/constants';
 import { InputSearch } from '@/components/shared/input-search';
 import { StudentDataTable } from '@/components/(admin)/students/student-data-table';
-import { EmptyStudentState } from '@/components/(admin)/students/empty-student-state';
+import { StudentEmptyState } from '@/components/(admin)/students/student-empty-state';
 import { getCurrentAccessToken } from '@/utils/session';
 import StudentService from '@/services/StudentService';
 import { IStudentSummary } from '@/types/models';
@@ -132,7 +132,7 @@ const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
         {result?.data.length ? (
           <StudentDataTable results={result} />
         ) : (
-          <EmptyStudentState status={status} />
+          <StudentEmptyState status={status} />
         )}
       </div>
     </div>

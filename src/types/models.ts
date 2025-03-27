@@ -35,6 +35,7 @@ export interface ILocation {
 
 export interface IStudent {
   id: number;
+  status: string;
   username?: string;
   parent_name: string;
   parent_phone_number: string;

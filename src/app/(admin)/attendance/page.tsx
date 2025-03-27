@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { UserRoundPlus, LayoutGrid, LayoutList } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InputSearch } from '@/components/shared/input-search';
-import { EmptyAttendanceState } from '@/components/(admin)/attendance/empty-attendance-state';
+import { AttendanceEmptyState } from '@/components/(admin)/attendance/attendance-empty-state';
 import { DatePickerSearch } from '@/components/ui/date-picker-search';
 import { getCurrentAccessToken } from '@/utils/session';
 import AttendanceService from '@/services/AttendanceService';
@@ -74,7 +74,7 @@ const AttendancePage = async ({ searchParams = {} }: IAttendancePageProps) => {
         </div>
       </div>
       <div className="mt-4">
-        {result?.data.length ? <AttendanceClassList results={result} /> : <EmptyAttendanceState />}
+        {result?.data.length ? <AttendanceClassList results={result} /> : <AttendanceEmptyState />}
       </div>
     </div>
   );

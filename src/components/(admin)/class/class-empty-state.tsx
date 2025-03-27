@@ -4,7 +4,7 @@ import { CLASS_STATUS, TClassStatus } from '@/utils/constants';
 
 export type EmptyDocumentProps = { status: TClassStatus };
 
-export const EmptyClassState = ({ status }: EmptyDocumentProps) => {
+export const ClassEmptyState = ({ status }: EmptyDocumentProps) => {
   const {
     title,
     message,

@@ -4,7 +4,7 @@ import { STUDENT_STATUS, TStudentStatus } from '@/utils/constants';
 
 export type EmptyDocumentProps = { status: TStudentStatus };
 
-export const EmptyStudentState = ({ status }: EmptyDocumentProps) => {
+export const StudentEmptyState = ({ status }: EmptyDocumentProps) => {
   const {
     title,
     message,

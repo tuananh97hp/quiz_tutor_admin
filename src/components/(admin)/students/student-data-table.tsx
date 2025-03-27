@@ -27,6 +27,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { StudentChangeStatus } from '@/components/(admin)/students/student-change-status';
+import { useDisclosure } from '@/hooks/use-disclosure';
+import { useSession } from 'next-auth/react';
 
 export type IStudentDataTableResult = FindResultSet<IStudent>;
 
@@ -38,30 +41,43 @@ interface IStudentDataTableAction {
 }
 
 const StudentDataTableAction = ({ student }: IStudentDataTableAction) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger data-testid="document-table-action-btn">
-        <MoreHorizontal className="text-muted-foreground h-5 w-5" />
-      </DropdownMenuTrigger>
+  const {
+    isOpen: isChangeStatusOpen,
+    onOpen: onOpenChangeStatus,
+    onToggle: onToggleChangeStatus,
+  } = useDisclosure();
 
-      <DropdownMenuContent className="w-52" align="start" forceMount>
-        <DropdownMenuLabel>Action</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <PencilRuler className="mr-2 h-4 w-4" /> Change Status
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Edit className="mr-2 h-4 w-4" /> Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <HandCoins className="mr-2 h-4 w-4" /> Payment
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CalendarCheck className="mr-2 h-4 w-4" />
-          Attendance
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger data-testid="document-table-action-btn">
+          <MoreHorizontal className="text-muted-foreground h-5 w-5" />
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent className="w-52" align="start" forceMount>
+          <DropdownMenuLabel>Action</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={onOpenChangeStatus}>
+            <PencilRuler className="mr-2 h-4 w-4" /> Change Status
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Edit className="mr-2 h-4 w-4" /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <HandCoins className="mr-2 h-4 w-4" /> Payment
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <CalendarCheck className="mr-2 h-4 w-4" />
+            Attendance
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <StudentChangeStatus
+        open={isChangeStatusOpen}
+        onOpenChange={onToggleChangeStatus}
+        student={student}
+      />
+    </>
   );
 };
 
