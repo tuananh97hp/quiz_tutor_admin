@@ -13,8 +13,8 @@ class StudentService extends BaseService {
     return result.data.data;
   }
 
-  async createStudent(accessToken: string) {
-    const result = await this.apiPost(`api/workspaces/1/students`, accessToken);
+  async createStudent(accessToken: string, payload?: object) {
+    const result = await this.apiPost(`api/workspaces/1/students`, accessToken, payload);
     return result.data;
   }
 

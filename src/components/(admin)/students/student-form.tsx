@@ -18,6 +18,21 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { UserPlus } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import { InputDatePicker } from '@/components/ui/input-date-picker';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import StudentService from '@/services/StudentService';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { HTTP_CODE } from '@/utils/constants/http';
+import { setErrorResponse } from '@/utils/handle';
 
 const formSchema = z.object({
   first_name: z.string(),
@@ -34,6 +49,9 @@ const formSchema = z.object({
 });
 
 export const StudentForm = () => {
+  const { data: currentSession } = useSession();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {},
@@ -41,7 +59,17 @@ export const StudentForm = () => {
 
   const isSubmitting = form.formState.isSubmitting;
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+    if (!currentSession?.accessToken) return;
+    try {
+      await StudentService.createStudent(currentSession?.accessToken, data);
+      toast('Successfully added student', { type: 'success' });
+      router.push('/student');
+    } catch (e) {
+      if (e instanceof AxiosError && e.status === HTTP_CODE.UNPROCESSABLE_ENTITY) {
+        setErrorResponse(e, form.setError);
+      }
+      toast('Failed to add student', { type: 'error' });
+    }
   }
 
   return (
@@ -49,7 +77,7 @@ export const StudentForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid w-full grid-cols-12 gap-8">
-            <div className="relative col-span-12 lg:col-span-8 xl:col-span-7 h-[200vh]">
+            <div className="relative col-span-12 lg:col-span-8 xl:col-span-7">
               <Card className="relative border-2 rounded-xl before:rounded-xl bg-background">
                 <CardHeader>
                   <CardTitle className="text-2xl">Student Information</CardTitle>
@@ -73,7 +101,7 @@ export const StudentForm = () => {
                         <FormItem>
                           <FormLabel required>First Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="first name" {...field} />
+                            <Input placeholder="First name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -95,11 +123,19 @@ export const StudentForm = () => {
                     <FormField
                       control={form.control}
                       name="gender"
-                      render={({ field }) => (
+                      render={({ field, fieldState }) => (
                         <FormItem>
                           <FormLabel required>Gender</FormLabel>
                           <FormControl>
-                            <Input placeholder="gender" {...field} />
+                            <Select defaultValue={field.value} onValueChange={field.onChange}>
+                              <SelectTrigger aria-invalid={fieldState.invalid}>
+                                <SelectValue placeholder="Select a gender" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="male">Male</SelectItem>
+                                <SelectItem value="female">Female</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -121,11 +157,16 @@ export const StudentForm = () => {
                     <FormField
                       control={form.control}
                       name="start_date"
-                      render={({ field }) => (
+                      render={({ field: { onChange, value }, fieldState }) => (
                         <FormItem>
                           <FormLabel required>Start Date</FormLabel>
                           <FormControl>
-                            <Input placeholder="start date" {...field} />
+                            <InputDatePicker
+                              aria-invalid={fieldState.invalid}
+                              value={value}
+                              onChangeDate={onChange}
+                              placeholder="Start date"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -151,7 +192,7 @@ export const StudentForm = () => {
                         <FormItem>
                           <FormLabel>Birth Date</FormLabel>
                           <FormControl>
-                            <Input placeholder="birth date" {...field} />
+                            <Input placeholder="Birth date" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -164,7 +205,7 @@ export const StudentForm = () => {
                         <FormItem>
                           <FormLabel>Address</FormLabel>
                           <FormControl>
-                            <Input placeholder="address" {...field} />
+                            <Input placeholder="Address" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -178,7 +219,7 @@ export const StudentForm = () => {
                           <FormItem>
                             <FormLabel>Description</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="description" {...field} />
+                              <Textarea placeholder="Description ..." {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -199,7 +240,7 @@ export const StudentForm = () => {
                         <FormItem>
                           <FormLabel>Parent Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="parent name" {...field} />
+                            <Input placeholder="Parent name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -212,7 +253,7 @@ export const StudentForm = () => {
                         <FormItem>
                           <FormLabel>Parent Phone Number</FormLabel>
                           <FormControl>
-                            <Input placeholder="parent phone number" {...field} />
+                            <Input placeholder="Parent phone number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -239,7 +280,10 @@ export const StudentForm = () => {
                     )}
                   >
                     <div className="flex flex-1 flex-col">
-                      <Button className="bg-fuchsia-400 hover:bg-fuchsia-500 dark:bg-fuchsia-500 text-white">
+                      <Button
+                        loading={isSubmitting}
+                        className="bg-fuchsia-400 hover:bg-fuchsia-500 dark:bg-fuchsia-500 text-white"
+                      >
                         <UserPlus />
                         Create Student
                       </Button>

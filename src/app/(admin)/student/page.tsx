@@ -21,6 +21,8 @@ export const metadata: Metadata = {
 interface ISearchParams {
   status?: string;
   search?: string;
+  page?: string;
+  perPage?: string;
 }
 
 interface IStudentPageProps {
@@ -59,7 +61,7 @@ const STATUS_TABS = [
 ];
 
 const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
-  const { status = 'active', search = '' } = searchParams;
+  const { status = 'active', search = '', perPage = '10', page = '1' } = searchParams;
   const accessToken = await getCurrentAccessToken();
 
   const getTabHref = (tab: string) => {
@@ -74,7 +76,12 @@ const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
     total_students: 0,
   };
   if (accessToken) {
-    result = await StudentService.fetchDataStudent(accessToken, { status, search });
+    result = await StudentService.fetchDataStudent(accessToken, {
+      status,
+      search,
+      page,
+      per_page: perPage,
+    });
     resultSummary = await StudentService.getStudentSummary(accessToken);
   }
   return (
