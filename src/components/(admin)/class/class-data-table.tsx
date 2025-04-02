@@ -20,6 +20,9 @@ import { TableExpand } from '@/components/shared/table-expand';
 import { Badge } from '@/components/ui/badge';
 import { DAY_OF_WEEK } from '@/utils/constants/date';
 import { formatMoney } from '@/utils/handle';
+import { SheetClassForm } from '@/components/(admin)/class/sheet-class-form';
+import { useDisclosure } from '@/hooks/use-disclosure';
+import { ClassChangeStatus } from '@/components/(admin)/class/class-change-status';
 
 export type IClassDataTableResult = FindResultSet<IClass>;
 
@@ -31,30 +34,58 @@ interface IClassDataTableAction {
 }
 
 const ClassDataTableAction = ({ classItem }: IClassDataTableAction) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger data-testid="document-table-action-btn">
-        <MoreHorizontal className="text-muted-foreground h-5 w-5" />
-      </DropdownMenuTrigger>
+  const {
+    isOpen: isOpenSheetForm,
+    onOpen: onOpenSheetForm,
+    onToggle: onToggleSheetForm,
+  } = useDisclosure();
+  const {
+    isOpen: isChangeStatusOpen,
+    onOpen: onOpenChangeStatus,
+    onToggle: onToggleChangeStatus,
+  } = useDisclosure();
 
-      <DropdownMenuContent className="w-52" align="start" forceMount>
-        <DropdownMenuLabel>Action</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <PencilRuler className="mr-2 h-4 w-4" /> Change Status
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Edit className="mr-2 h-4 w-4" /> Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Users className="mr-2 h-4 w-4" /> Students
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <CalendarCheck className="mr-2 h-4 w-4" />
-          Attendance
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger data-testid="document-table-action-btn">
+          <MoreHorizontal className="text-muted-foreground h-5 w-5" />
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent className="w-52" align="start" forceMount>
+          <DropdownMenuLabel>Action</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={onOpenChangeStatus}>
+            <PencilRuler className="mr-2 h-4 w-4" /> Change Status
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={onOpenSheetForm}>
+            <Edit className="mr-2 h-4 w-4" /> Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Users className="mr-2 h-4 w-4" /> Students
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <CalendarCheck className="mr-2 h-4 w-4" />
+            Attendance
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {isChangeStatusOpen && (
+        <ClassChangeStatus
+          open={isChangeStatusOpen}
+          onOpenChange={onToggleChangeStatus}
+          classItem={classItem}
+        />
+      )}
+      {isOpenSheetForm && (
+        <SheetClassForm
+          hideTrigger={true}
+          open={isOpenSheetForm}
+          onOpenChange={onToggleSheetForm}
+          classItem={classItem}
+        />
+      )}
+    </>
   );
 };
 export const ClassDataTable = ({ results }: IClassTableProps) => {

@@ -9,6 +9,10 @@ export type FindResultSet<T> = {
   };
 };
 
+export type DetailResultSet<T> = {
+  data: T;
+};
+
 export type ListFindResultSet<T> = {
   data: T extends Array<unknown> ? T : T[];
 };

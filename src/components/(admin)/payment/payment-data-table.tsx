@@ -51,8 +51,7 @@ const PaymentDataTableAction = ({ payment }: IPaymentDataTableAction) => {
           <Edit className="mr-2 h-4 w-4" /> Edit
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Trash className="mr-2 h-4 w-4" />
-          Attendance
+          <Trash className="mr-2 h-4 w-4" /> Delete
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

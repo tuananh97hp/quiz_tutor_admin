@@ -33,6 +33,8 @@ import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { HTTP_CODE } from '@/utils/constants/http';
 import { setErrorResponse } from '@/utils/handle';
+import { IStudent } from '@/types/models';
+import _ from 'lodash';
 
 const formSchema = z.object({
   first_name: z.string(),
@@ -48,27 +50,37 @@ const formSchema = z.object({
   parent_phone_number: z.string().min(10).max(11).optional(),
 });
 
-export const StudentForm = () => {
+interface IStudentFormProps {
+  student?: IStudent;
+}
+
+export const StudentForm = ({ student }: IStudentFormProps) => {
   const { data: currentSession } = useSession();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {},
+    defaultValues: _.omitBy(student, _.isNil) || {},
   });
-
   const isSubmitting = form.formState.isSubmitting;
+  const isEditing = !!student;
+  const textEditing = !!student ? 'Update' : 'Add New';
+
   async function onSubmit(data: z.infer<typeof formSchema>) {
     if (!currentSession?.accessToken) return;
     try {
-      await StudentService.createStudent(currentSession?.accessToken, data);
-      toast('Successfully added student', { type: 'success' });
+      if (isEditing) {
+        await StudentService.updateStudent(currentSession?.accessToken, student.id, data);
+      } else {
+        await StudentService.createStudent(currentSession?.accessToken, data);
+      }
+      toast(`Successfully ${textEditing} Student`, { type: 'success' });
       router.push('/student');
     } catch (e) {
       if (e instanceof AxiosError && e.status === HTTP_CODE.UNPROCESSABLE_ENTITY) {
         setErrorResponse(e, form.setError);
       }
-      toast('Failed to add student', { type: 'error' });
+      toast(`Failed To ${textEditing} Student`, { type: 'error' });
     }
   }
 
@@ -266,11 +278,11 @@ export const StudentForm = () => {
             <div className="col-span-12 lg:col-span-4 xl:col-span-5">
               <div className="dark:bg-background border-border bg-neutral-100 sticky top-20 flex h-full max-h-[64rem] flex-col overflow-auto rounded-xl border px-4 py-6 lg:h-[calc(100vh-20rem)]">
                 <div className="-mx-2 flex flex-1 flex-col px-2">
-                  <h3 className="text-foreground text-2xl font-semibold">Create New Student</h3>
+                  <h3 className="text-foreground text-2xl font-semibold">{textEditing} Student</h3>
 
                   <p className="text-muted-foreground mt-2 text-sm">
                     Enter the necessary information such as name, student ID, class, and other
-                    details to create a student profile.
+                    details to {textEditing} a student profile.
                   </p>
 
                   <hr className="border-border mb-8 mt-4" />
@@ -285,7 +297,7 @@ export const StudentForm = () => {
                         className="bg-fuchsia-400 hover:bg-fuchsia-500 dark:bg-fuchsia-500 text-white"
                       >
                         <UserPlus />
-                        Create Student
+                        {textEditing} Student
                       </Button>
                     </div>
                   </div>

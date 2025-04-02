@@ -30,6 +30,7 @@ import { Button } from '@/components/ui/button';
 import { StudentChangeStatus } from '@/components/(admin)/students/student-change-status';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 export type IStudentDataTableResult = FindResultSet<IStudent>;
 
@@ -60,8 +61,10 @@ const StudentDataTableAction = ({ student }: IStudentDataTableAction) => {
           <DropdownMenuItem onClick={onOpenChangeStatus}>
             <PencilRuler className="mr-2 h-4 w-4" /> Change Status
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Edit className="mr-2 h-4 w-4" /> Edit
+          <DropdownMenuItem asChild>
+            <Link href={`/student/${student.id}/edit`}>
+              <Edit className="mr-2 h-4 w-4" /> Edit
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <HandCoins className="mr-2 h-4 w-4" /> Payment
@@ -72,11 +75,13 @@ const StudentDataTableAction = ({ student }: IStudentDataTableAction) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <StudentChangeStatus
-        open={isChangeStatusOpen}
-        onOpenChange={onToggleChangeStatus}
-        student={student}
-      />
+      {isChangeStatusOpen && (
+        <StudentChangeStatus
+          open={isChangeStatusOpen}
+          onOpenChange={onToggleChangeStatus}
+          student={student}
+        />
+      )}
     </>
   );
 };
@@ -110,7 +115,7 @@ export const StudentDataTable = ({ results }: IStudentTableProps) => {
             <a
               href="#"
               className="truncate max-w-[15rem] whitespace-normal line-clamp-1 hover:underline underline-offset-2 font-bold"
-            >{`${row.original.first_name} ${row.original.last_name}`}</a>
+            >{`${row.original.first_name} ${row.original.last_name || ''}`}</a>
           );
         },
       },
@@ -200,12 +205,7 @@ export const StudentDataTable = ({ results }: IStudentTableProps) => {
                 <span className="text-foreground/50 text-xs font-medium">Start Date</span>
                 <div>{row.original.start_date || '-'}</div>
               </div>
-              <div className="flex justify-center items-center">
-                <Button>
-                  <EyeIcon className="-ml-1 mr-2 h-4 w-4" />
-                  View
-                </Button>
-              </div>
+              <div className="flex justify-center items-center" />
             </div>
           );
         }}

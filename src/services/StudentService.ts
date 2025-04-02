@@ -1,10 +1,17 @@
 import { BaseService } from '@/services/BaseService';
-import { FindResultSet } from '@/types/find-result-set';
+import { DetailResultSet, FindResultSet } from '@/types/find-result-set';
 import { IStudent, IStudentSummary } from '@/types/models';
 
 class StudentService extends BaseService {
   async fetchDataStudent(accessToken: string, payload?: object): Promise<FindResultSet<IStudent>> {
     const result = await this.apiGet('api/workspaces/1/students', accessToken, payload);
+    return result.data;
+  }
+  async getStudentDetail(
+    accessToken: string,
+    studentId: number,
+  ): Promise<DetailResultSet<IStudent>> {
+    const result = await this.apiGet(`api/workspaces/1/students/${studentId}`, accessToken);
     return result.data;
   }
 

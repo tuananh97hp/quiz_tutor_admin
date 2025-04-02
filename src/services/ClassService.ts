@@ -49,6 +49,16 @@ class ClassService extends BaseService {
     return result.data;
   }
 
+  async updateStatus(accessToken: string, classId: number, payload?: object) {
+    const result = await this.apiPut(
+      `api/workspaces/1/classes/${classId}/update-status`,
+      accessToken,
+      payload,
+    );
+
+    return result.data;
+  }
+
   async deleteClass(accessToken: string, classId: number) {
     const result = await this.apiDelete(`api/workspaces/1/classes/${classId}`, accessToken);
 

@@ -13,6 +13,8 @@ import { ClassEmptyState } from '@/components/(admin)/class/class-empty-state';
 import { getCurrentAccessToken } from '@/utils/session';
 import classService from '@/services/ClassService';
 import { IClassSummary } from '@/types/models';
+import { SheetClassForm } from '@/components/(admin)/class/sheet-class-form';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'Class Page',
@@ -21,6 +23,8 @@ export const metadata: Metadata = {
 interface ISearchParams {
   status?: string;
   search?: string;
+  page?: string;
+  perPage?: string;
 }
 
 interface IClassPageProps {
@@ -52,7 +56,7 @@ const STATUS_TABS = [
 ];
 
 const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
-  const { status = 'open', search = '' } = searchParams;
+  const { status = 'open', search = '', perPage = '10', page = '1' } = searchParams;
   const accessToken = await getCurrentAccessToken();
 
   const getTabHref = (tab: string) => {
@@ -66,7 +70,12 @@ const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
     total_classes: 0,
   };
   if (accessToken) {
-    result = await classService.fetchDataClass(accessToken, { status, search });
+    result = await classService.fetchDataClass(accessToken, {
+      status,
+      search,
+      page,
+      per_page: perPage,
+    });
     resultSummary = await classService.getClassSummary(accessToken);
   }
 
@@ -80,9 +89,7 @@ const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
 
           <h1 className="text-4xl font-semibold">Class List</h1>
         </div>
-        <Button>
-          <BookPlus /> Create Class
-        </Button>
+        <SheetClassForm />
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
             <Tabs defaultValue={status}>
