@@ -7,6 +7,7 @@ import { PaymentDataTable } from '@/components/(admin)/payment/payment-data-tabl
 import { PaymentEmptyState } from '@/components/(admin)/payment/payment-empty-state';
 import { getCurrentAccessToken } from '@/utils/session';
 import PaymentService from '@/services/PaymentService';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Payment Page',
@@ -39,8 +40,10 @@ const PaymentPage = async ({ searchParams = {} }: IPaymentPageProps) => {
 
           <h1 className="text-4xl font-semibold">Payment List</h1>
         </div>
-        <Button>
-          <CirclePlus /> Create Payment
+        <Button asChild>
+          <Link href="/payment/create">
+            <CirclePlus /> Create Payment
+          </Link>
         </Button>
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">

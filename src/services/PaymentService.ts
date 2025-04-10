@@ -14,7 +14,17 @@ class PaymentService extends BaseService {
 
     return result.data;
   }
-  async createStudentPayment(accessToken: string, payload?: object) {
+  async updatePayment(accessToken: string, paymentId: number, payload?: object) {
+    const result = await this.apiPut(
+      `api/workspaces/1/payments/${paymentId}`,
+      accessToken,
+      payload,
+    );
+
+    return result.data;
+  }
+
+  async createPayment(accessToken: string, payload?: object) {
     const result = await this.apiPost(`api/workspaces/1/payments`, accessToken, payload);
 
     return result.data;
