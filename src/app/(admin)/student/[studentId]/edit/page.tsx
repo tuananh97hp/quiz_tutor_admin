@@ -25,7 +25,7 @@ const EditStudentPage = async ({ params }: IEditStudentPageProps) => {
   } catch (e) {
     return notFound();
   }
-  console.log(student);
+
   if (!student) return notFound();
 
   return (

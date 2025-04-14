@@ -16,6 +16,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { cn } from '@/lib/utils';
 import { AnimateGenericFadeInOut } from '@/components/ui/animate-generic-fade-in-out';
+import { useEffect } from 'react';
 
 type OptionValue = string | number | boolean | null;
 
@@ -25,27 +26,27 @@ type ComboBoxOption<T = OptionValue> = {
   disabled?: boolean;
 };
 
-type MultiSelectComboboxProps<T = OptionValue> = {
+type SingleSelectComboboxProps<T = OptionValue> = {
   emptySelectionPlaceholder?: React.ReactNode | string;
   enableClearAllButton?: boolean;
   loading?: boolean;
   loadingSearch?: boolean;
   inputPlaceholder?: string;
-  onChange: (_values: T[]) => void;
+  onChange: (_value: T) => void;
   onChangeSearch?: (_value: string) => void;
   options: ComboBoxOption<T>[];
-  selectedValues: T[];
+  selectedValue: T;
 };
 
 /**
- * Multi select combo box component which supports:
+ * Single select combo box component which supports:
  *
  * - Label/value pairs
  * - Loading state
  * - Clear all button
  */
-export function MultiSelectCombobox<T = OptionValue>({
-  emptySelectionPlaceholder = 'Select values...',
+export function SingleSelectCombobox<T = OptionValue>({
+  emptySelectionPlaceholder = 'Select value...',
   enableClearAllButton,
   inputPlaceholder,
   onChange,
@@ -53,57 +54,35 @@ export function MultiSelectCombobox<T = OptionValue>({
   loadingSearch,
   loading,
   options,
-  selectedValues,
-}: MultiSelectComboboxProps<T>) {
+  selectedValue,
+}: SingleSelectComboboxProps<T>) {
   const [open, setOpen] = React.useState(false);
 
   const handleSelect = (selectedOption: T) => {
-    const values = selectedValues as T[];
-    let newSelectedOptions = [...values, selectedOption];
-
-    if (values.includes(selectedOption)) {
-      newSelectedOptions = values.filter((v) => v !== selectedOption);
-    }
-
-    onChange(newSelectedOptions);
+    onChange(selectedOption);
 
     setOpen(false);
   };
 
-  const selectedOptions = React.useMemo(() => {
-    return selectedValues.map((value): ComboBoxOption<T> => {
-      const foundOption = options.find((option) => option.value === value);
-
-      if (foundOption) {
-        return foundOption;
-      }
-
-      let label = '';
-
-      if (typeof value === 'string' || typeof value === 'number') {
-        label = value.toString();
-      }
-
-      return {
-        label,
-        value,
-      };
+  const selectedOption = React.useMemo(() => {
+    return options.find((value) => {
+      return value.value === selectedValue;
     });
-  }, [selectedValues, options]);
+  }, [selectedValue, options]);
 
   const buttonLabel = React.useMemo(() => {
     if (loading) {
       return '';
     }
 
-    if (selectedOptions.length === 0) {
+    if (!selectedOption) {
       return emptySelectionPlaceholder;
     }
 
-    return selectedOptions.map((option) => option.label).join(', ');
-  }, [selectedOptions, emptySelectionPlaceholder, loading]);
+    return selectedOption.label;
+  }, [selectedOption, emptySelectionPlaceholder, loading]);
 
-  const showClearButton = enableClearAllButton && selectedValues.length > 0;
+  const showClearButton = enableClearAllButton && !!selectedValue;
 
   return (
     <Popover open={open && !loading} onOpenChange={setOpen}>
@@ -144,7 +123,7 @@ export function MultiSelectCombobox<T = OptionValue>({
             <button
               className="flex h-4 w-4 items-center justify-center rounded-full bg-gray-300 dark:bg-neutral-700"
               onClick={() => {
-                onChange([]);
+                (onChange as (v: OptionValue) => void)(null);
                 onChangeSearch && onChangeSearch('');
               }}
             >
@@ -170,7 +149,7 @@ export function MultiSelectCombobox<T = OptionValue>({
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      selectedValues.includes(option.value) ? 'opacity-100' : 'opacity-0',
+                      selectedValue === option.value ? 'opacity-100' : 'opacity-0',
                     )}
                   />
                   {option.label}

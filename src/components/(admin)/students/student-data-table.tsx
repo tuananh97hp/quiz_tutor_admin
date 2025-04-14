@@ -66,8 +66,10 @@ const StudentDataTableAction = ({ student }: IStudentDataTableAction) => {
               <Edit className="mr-2 h-4 w-4" /> Edit
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <HandCoins className="mr-2 h-4 w-4" /> Payment
+          <DropdownMenuItem asChild>
+            <Link href={`/student/${student.id}/payment/create`}>
+              <HandCoins className="mr-2 h-4 w-4" /> Payment
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <CalendarCheck className="mr-2 h-4 w-4" />

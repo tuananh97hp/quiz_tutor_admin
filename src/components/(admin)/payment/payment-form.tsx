@@ -11,21 +11,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { UserPlus } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { InputDatePicker } from '@/components/ui/input-date-picker';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import PaymentService from '@/services/PaymentService';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -33,39 +25,61 @@ import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { HTTP_CODE } from '@/utils/constants/http';
 import { setErrorResponse } from '@/utils/handle';
-import { IPayment } from '@/types/models';
+import { IPayment, IStudent } from '@/types/models';
 import _ from 'lodash';
-import { MultiSelectCombobox } from '@/components/ui/multi-select-combobox';
+import { SingleSelectCombobox } from '@/components/ui/single-select-combobox';
+import { PaymentAttendanceAttendanceDataTable } from '@/components/(admin)/payment/payment-attendance-table';
+import { format } from 'date-fns';
+import { Input } from '@/components/ui/input';
+import StudentService from '@/services/StudentService';
 
 const formSchema = z.object({
-  first_name: z.string(),
-  last_name: z.string().optional(),
-  email: z.string().email().optional(),
-  phone_number: z.string().min(10).max(11).optional(),
-  birth_date: z.string().optional(),
-  address: z.string().optional(),
-  gender: z.string().nonempty(),
-  start_date: z.string().nonempty(),
-  description: z.string().optional(),
-  parent_name: z.string().optional(),
-  parent_phone_number: z.string().min(10).max(11).optional(),
+  user_id: z.number(),
+  money: z.preprocess((value) => Number(value), z.number().min(10)),
+  desc: z.string(),
+  payment_date: z.string().nonempty(),
+  attendances: z.array(z.number()).min(1),
 });
 
 interface IPaymentFormProps {
   payment?: IPayment;
+  student?: IStudent;
 }
 
-export const PaymentForm = ({ payment }: IPaymentFormProps) => {
+const defaultValues = (student?: IStudent) => {
+  if (student) {
+    return {
+      user_id: student.id,
+      payment_date: format(new Date(), 'yyyy-MM-dd'),
+      attendances: [],
+      desc: '',
+    };
+  }
+
+  return {
+    payment_date: format(new Date(), 'yyyy-MM-dd'),
+    attendances: [],
+    desc: '',
+  };
+};
+
+export const PaymentForm = ({ payment, student }: IPaymentFormProps) => {
   const { data: currentSession } = useSession();
   const router = useRouter();
+  const [students, setStudents] = React.useState<IStudent[]>([]);
+  const [isLoadingStudents, startTransitionLoadingStudents] = React.useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: _.omitBy(payment, _.isNil) || {},
+    defaultValues: payment ? _.omitBy(payment, _.isNil) : defaultValues(student),
   });
   const isSubmitting = form.formState.isSubmitting;
   const isEditing = !!payment;
   const textEditing = !!payment ? 'Update' : 'Add New';
+
+  useEffect(() => {
+    handleChangeSearchUser('');
+  }, [currentSession?.accessToken]);
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     if (!currentSession?.accessToken) return;
@@ -84,6 +98,40 @@ export const PaymentForm = ({ payment }: IPaymentFormProps) => {
       toast(`Failed To ${textEditing} Payment`, { type: 'error' });
     }
   }
+
+  const handleChangeSearchUser = (value: string) => {
+    startTransitionLoadingStudents(async () => {
+      if (currentSession?.accessToken && !student) {
+        try {
+          const { data } = await StudentService.fetchDataStudent(currentSession?.accessToken, {
+            search: value,
+          });
+          setStudents(data);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
+  };
+
+  const handleChangeAttendanceSelected = (attendance_id: number) => {
+    const attendances = form.getValues('attendances');
+    if (attendances.includes(attendance_id)) {
+      form.setValue(
+        'attendances',
+        attendances.filter((id) => id !== attendance_id),
+      );
+    } else {
+      form.setValue('attendances', [...attendances, attendance_id]);
+    }
+  };
+
+  const studentsOptions = useMemo(() => {
+    return students.map((student) => ({
+      value: student.id,
+      label: `${student.first_name} ${student.last_name || ''}`,
+    }));
+  }, [students]);
 
   return (
     <>
@@ -106,185 +154,57 @@ export const PaymentForm = ({ payment }: IPaymentFormProps) => {
                     </span>
                     <hr className="border-border" />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <MultiSelectCombobox
-                      onChange={(_values) => {
-                        console.log(_values);
-                      }}
-                      options={[
-                        {
-                          label: 'Option 1',
-                          value: 1,
-                        },
-                      ]}
-                      isMultiple={true}
-                      selectedValues={[]}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="first_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required>First Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="First name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="last_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Last Name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="gender"
-                      render={({ field, fieldState }) => (
-                        <FormItem>
-                          <FormLabel required>Gender</FormLabel>
-                          <FormControl>
-                            <Select defaultValue={field.value} onValueChange={field.onChange}>
-                              <SelectTrigger aria-invalid={fieldState.invalid}>
-                                <SelectValue placeholder="Select a gender" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="male">Male</SelectItem>
-                                <SelectItem value="female">Female</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="start_date"
-                      render={({ field: { onChange, value }, fieldState }) => (
-                        <FormItem>
-                          <FormLabel required>Start Date</FormLabel>
-                          <FormControl>
-                            <InputDatePicker
-                              aria-invalid={fieldState.invalid}
-                              value={value}
-                              onChangeDate={onChange}
-                              placeholder="Start date"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="phone_number"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Phone Number" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="birth_date"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Birth Date</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Birth date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Address</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Address" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="col-span-2">
+                  <div>
+                    {student ? (
+                      <>
+                        Add New a payment for:{' '}
+                        <span className="font-semibold text-red-500">
+                          {student.first_name} {student.last_name || ''}
+                        </span>
+                      </>
+                    ) : (
                       <FormField
                         control={form.control}
-                        name="description"
+                        name="user_id"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Description</FormLabel>
+                            <FormLabel required>Student Payment</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="Description ..." {...field} />
+                              <SingleSelectCombobox
+                                selectedValue={field.value}
+                                onChange={(value) => {
+                                  field.onChange(value);
+                                  form.setValue('attendances', []);
+                                }}
+                                onChangeSearch={handleChangeSearchUser}
+                                emptySelectionPlaceholder="Select student for payment"
+                                options={studentsOptions}
+                                loadingSearch={isLoadingStudents}
+                                enableClearAllButton={true}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+                    )}
+                  </div>
+                  <div className="mt-8">
+                    <div className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 after:content-['*'] after:text-red-500 after:ml-0.5">
+                      Attendance
                     </div>
-                  </div>
-                  <div className="mt-6 mb-4">
-                    <span className="text-foreground/50 text-xs font-bold">Parent Fields</span>
-                    <hr className="border-border" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="parent_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Parent Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Parent name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="parent_phone_number"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Parent Phone Number</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Parent phone number" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="mt-4">
+                      <PaymentAttendanceAttendanceDataTable
+                        student_id={form.watch('user_id')}
+                        attendanceSelected={form.watch('attendances')}
+                        onChangeAttSelected={handleChangeAttendanceSelected}
+                      />
+                    </div>
+                    {form.formState.errors.attendances && (
+                      <p className="text-sm text-red-500">
+                        {form.formState.errors.attendances.message}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -300,6 +220,54 @@ export const PaymentForm = ({ payment }: IPaymentFormProps) => {
                   </p>
 
                   <hr className="border-border mb-8 mt-4" />
+                  <div className="grid grid-cols-1 gap-4 mb-8">
+                    <FormField
+                      control={form.control}
+                      name="money"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Money</FormLabel>
+                          <FormControl>
+                            <Input type="number" placeholder="Money" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="payment_date"
+                      render={({ field: { onChange, value }, fieldState }) => (
+                        <FormItem>
+                          <FormLabel required>Payment Date</FormLabel>
+                          <FormControl>
+                            <InputDatePicker
+                              aria-invalid={fieldState.invalid}
+                              value={value}
+                              onChangeDate={onChange}
+                              placeholder="Start date"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div>
+                      <FormField
+                        control={form.control}
+                        name="desc"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea placeholder="Description ..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
                   <div
                     className={cn(
                       'custom-scrollbar -mx-2 flex flex-1 flex-col overflow-hidden px-2',

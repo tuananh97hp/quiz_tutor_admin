@@ -1,9 +1,12 @@
 import { BaseService } from '@/services/BaseService';
 import { ListFindResultSet } from '@/types/find-result-set';
-import { IClass } from '@/types/models';
+import { IAttendance, IClass } from '@/types/models';
 
 class AttendanceService extends BaseService {
-  async getStudentAttendance(accessToken: string, payload?: object) {
+  async getStudentAttendance(
+    accessToken: string,
+    payload?: object,
+  ): Promise<ListFindResultSet<IAttendance>> {
     const result = await this.apiGet('api/attendance-student', accessToken, payload);
 
     return result.data;

@@ -29,7 +29,6 @@ const AttendancePage = async ({ searchParams = {} }: IAttendancePageProps) => {
 
   let result;
   if (accessToken) {
-    console.log(date);
     result = await AttendanceService.getClassesAttendance(accessToken, { date, search });
   }
 

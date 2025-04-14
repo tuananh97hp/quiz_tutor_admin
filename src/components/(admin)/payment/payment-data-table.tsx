@@ -86,7 +86,7 @@ export const PaymentDataTable = ({ results }: IPaymentTableProps) => {
             <a
               href="#"
               className="truncate md:max-w-[10rem] whitespace-normal line-clamp-1 hover:underline underline-offset-2 font-bold"
-            >{`${row.original.first_name} ${row.original.last_name}`}</a>
+            >{`${row.original.first_name} ${row.original.last_name || ''}`}</a>
           );
         },
       },
