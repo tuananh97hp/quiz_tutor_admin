@@ -1,7 +1,15 @@
 import { Metadata } from 'next';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { UserRoundPlus, CircleCheck, Loader, UserRoundX, List } from 'lucide-react';
+import {
+  UserRoundPlus,
+  CircleCheck,
+  Loader,
+  UserRoundX,
+  List,
+  FileUp,
+  FileDown,
+} from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TabButton from '@/components/shared/tab-button';
 import Link from 'next/link';
@@ -13,6 +21,7 @@ import { StudentEmptyState } from '@/components/(admin)/students/student-empty-s
 import { getCurrentAccessToken } from '@/utils/session';
 import StudentService from '@/services/StudentService';
 import { IStudentSummary } from '@/types/models';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'Student Page',
@@ -94,11 +103,20 @@ const StudentPage = async ({ searchParams = {} }: IStudentPageProps) => {
 
           <h1 className="text-4xl font-semibold">Student List</h1>
         </div>
-        <Button asChild>
-          <Link href="/student/create">
-            <UserRoundPlus /> Create Student
-          </Link>
-        </Button>
+        <div className="flex gap-3">
+          <Button asChild>
+            <Link href="/student/create">
+              <UserRoundPlus /> Create Student
+            </Link>
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl shadow">
+            <FileUp /> Upload Excel
+          </Button>
+          <Button className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-xl shadow">
+            <FileDown /> Download Excel
+          </Button>
+        </div>
+
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
             <Tabs defaultValue={status}>

@@ -93,18 +93,6 @@ export const PaymentAttendanceAttendanceDataTable = ({
       <DataTable
         columns={columns}
         data={attendanceList}
-        renderSubComponent={({ row }) => {
-          return (
-            <div className="flex items-center gap-x-20 border-b py-3 pr-5 pl-10 last:border-b-0">
-              <div className="flex flex-col gap-y-1">
-                <span className="text-foreground/50 text-xs font-medium">Parent date</span>
-                <div className="text-foreground/50 text-sm font-medium">
-                  {row.original.attendance_date || '-'}
-                </div>
-              </div>
-            </div>
-          );
-        }}
         sorting={sorting}
         onSortingChange={handleSortingChange}
       />

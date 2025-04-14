@@ -79,7 +79,7 @@ export interface IStudentAttendance {
   first_name: string;
   last_name: string;
   avatar?: string;
-  is_attendance: boolean;
+  is_attendance: number;
 }
 
 export interface ITest {

@@ -23,6 +23,7 @@ import { formatMoney } from '@/utils/handle';
 import { SheetClassForm } from '@/components/(admin)/class/sheet-class-form';
 import { useDisclosure } from '@/hooks/use-disclosure';
 import { ClassChangeStatus } from '@/components/(admin)/class/class-change-status';
+import Link from 'next/link';
 
 export type IClassDataTableResult = FindResultSet<IClass>;
 
@@ -64,9 +65,11 @@ const ClassDataTableAction = ({ classItem }: IClassDataTableAction) => {
           <DropdownMenuItem>
             <Users className="mr-2 h-4 w-4" /> Students
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <CalendarCheck className="mr-2 h-4 w-4" />
-            Attendance
+          <DropdownMenuItem asChild>
+            <Link href={`/class/${classItem.id}/attendance`}>
+              <CalendarCheck className="mr-2 h-4 w-4" />
+              Attendance
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

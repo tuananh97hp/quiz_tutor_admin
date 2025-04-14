@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
@@ -11,6 +11,7 @@ import { Button } from './button';
 import { Calendar } from './calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { cn } from '@/lib/utils';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface DatePickerProps extends React.ComponentPropsWithoutRef<typeof PopoverContent> {
   /**
@@ -49,53 +50,6 @@ interface DatePickerProps extends React.ComponentPropsWithoutRef<typeof PopoverC
   triggerClassName?: string;
 }
 
-const parseAsStringWithDefault = (value: string | null, defaultValue = '') => {
-  return typeof value === 'string' && value.trim() !== '' ? value : defaultValue;
-};
-
-type DateParams = {
-  date: string;
-};
-
-type UseDateParamsReturn = [DateParams, (newParams: Partial<DateParams>) => void];
-
-type UseDateParams = (defaultDate?: Date) => UseDateParamsReturn;
-
-const useDateParams: UseDateParams = (defaultDate) => {
-  const [dateParams, setDateParams] = useState<DateParams>({
-    date: parseAsStringWithDefault(defaultDate?.toISOString() ?? '', ''),
-  });
-
-  const updateDateParams = (newParams: Partial<DateParams>) => {
-    setDateParams((prevParams) => {
-      const updatedParams = {
-        ...prevParams,
-        ...newParams,
-      };
-
-      const queryString = new URLSearchParams(window.location.search);
-      if (updatedParams.date) {
-        queryString.set('date', format(new Date(updatedParams.date), 'yyyy-MM-dd'));
-      } else {
-        queryString.delete('date');
-      }
-      window.history.replaceState(null, '', `?${queryString.toString()}`);
-
-      return updatedParams;
-    });
-  };
-
-  useEffect(() => {
-    const queryString = new URLSearchParams(window.location.search);
-    const date = queryString.get('date');
-    setDateParams({
-      date: parseAsStringWithDefault(date, dateParams.date),
-    });
-  }, []);
-
-  return [dateParams, updateDateParams];
-};
-
 export function DatePickerSearch({
   defaultDate,
   placeholder = 'Pick a date',
@@ -105,13 +59,26 @@ export function DatePickerSearch({
   className,
   ...props
 }: DatePickerProps) {
-  const [dateParams, setDateParams] = useDateParams(defaultDate);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [dateTerm, setDateTerm] = useState(defaultDate);
 
-  const date = React.useMemo(() => {
-    if (!dateParams.date) return defaultDate;
-    const parsedDate = new Date(dateParams.date);
-    return Number.isNaN(parsedDate.getTime()) ? defaultDate : parsedDate;
-  }, [dateParams, defaultDate]);
+  const handleSearch = useCallback(
+    (term?: Date) => {
+      const params = new URLSearchParams(searchParams?.toString() ?? '');
+      if (term) {
+        params.set('date', format(term, 'yyyy-MM-dd'));
+      } else {
+        params.delete('date');
+      }
+      router.push(`?${params.toString()}`);
+    },
+    [router, searchParams],
+  );
+
+  useEffect(() => {
+    handleSearch(dateTerm);
+  }, [dateTerm, handleSearch]);
 
   return (
     <div className="grid gap-2">
@@ -122,13 +89,13 @@ export function DatePickerSearch({
             size={triggerSize}
             className={cn(
               'w-full justify-start gap-2 truncate text-left font-normal',
-              !date && 'text-muted-foreground',
+              !dateTerm && 'text-muted-foreground',
               triggerClassName,
             )}
           >
             <CalendarIcon className="ml-1 size-4 text-gray-500" />
-            {date ? (
-              format(date, 'LLL dd, y')
+            {dateTerm ? (
+              format(dateTerm, 'LLL dd, y')
             ) : (
               <span className="text-gray-500">{placeholder}</span>
             )}
@@ -138,10 +105,10 @@ export function DatePickerSearch({
           <Calendar
             mode="single"
             initialFocus
-            defaultMonth={date}
-            selected={date}
+            defaultMonth={dateTerm}
+            selected={dateTerm}
             onSelect={(newDate) => {
-              void setDateParams({ date: newDate?.toISOString() ?? '' });
+              void setDateTerm(newDate);
             }}
             numberOfMonths={1}
           />

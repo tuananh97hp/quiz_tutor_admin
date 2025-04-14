@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { DAY_OF_WEEK } from '@/utils/constants/date';
 import { Badge } from '@/components/ui/badge';
 import { formatMoney } from '@/utils/handle';
+import Link from 'next/link';
 
 interface IClassTableProps {
   classItem: IClass;
@@ -111,8 +112,10 @@ export const AttendanceClassItem = ({ classItem }: IClassTableProps) => {
           <div className="flex items-center justify-between w-full">
             <AttendanceClassAction classItem={classItem} />
             <div>
-              <Button className="bg-green-500 text-white hover:bg-green-500/90">
-                <CalendarCheck className="mr-2 h-4 w-4" /> Attendance
+              <Button className="bg-green-500 text-white hover:bg-green-500/90" asChild>
+                <Link href={`/attendance/class/${classItem.id}`}>
+                  <CalendarCheck className="mr-2 h-4 w-4" /> Attendance
+                </Link>
               </Button>
             </div>
           </div>

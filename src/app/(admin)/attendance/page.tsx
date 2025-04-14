@@ -9,6 +9,7 @@ import { DatePickerSearch } from '@/components/ui/date-picker-search';
 import { getCurrentAccessToken } from '@/utils/session';
 import AttendanceService from '@/services/AttendanceService';
 import { AttendanceClassList } from '@/components/(admin)/attendance/attendance-class-list';
+import { parseISO } from 'date-fns';
 
 export const metadata: Metadata = {
   title: 'Attendance Page',
@@ -42,9 +43,6 @@ const AttendancePage = async ({ searchParams = {} }: IAttendancePageProps) => {
 
           <h1 className="text-4xl font-semibold">Attendance List</h1>
         </div>
-        <Button>
-          <UserRoundPlus /> Create Attendance
-        </Button>
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-4 overflow-hidden p-1">
             <Tabs defaultValue="grid" className="w-full">
@@ -64,7 +62,7 @@ const AttendancePage = async ({ searchParams = {} }: IAttendancePageProps) => {
                 <InputSearch initialValue={searchParams.search || ''} label="classes" />
               </div>
               <div className="flex-grow basis-64">
-                <DatePickerSearch />
+                <DatePickerSearch defaultDate={parseISO(date) || ''} />
               </div>
               <div className="flex-grow basis-64" />
               <div className="flex-grow basis-64" />

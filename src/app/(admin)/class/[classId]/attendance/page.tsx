@@ -12,11 +12,11 @@ interface IPageParams {
   classId: string;
 }
 
-interface IAttendancePageProps {
+interface IClassAttendancePageProps {
   params: IPageParams;
 }
 
-const CreateAttendancePage = async ({ params }: IAttendancePageProps) => {
+const ClassAttendancePage = async ({ params }: IClassAttendancePageProps) => {
   const { classId } = params;
   const accessToken = await getCurrentAccessToken();
 
@@ -33,11 +33,11 @@ const CreateAttendancePage = async ({ params }: IAttendancePageProps) => {
   return (
     <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-8">
       <Link
-        href="/attendance"
+        href="/class"
         className="text-primary-700 hover:text-primary-600 hover:text-foreground hover:bg-muted/10 border-muted-background inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium transition-all"
       >
         <ChevronLeftCircle className="mr-2 inline-block h-5 w-5" />
-        Attendances
+        Class
       </Link>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
         <div className="flex flex-row items-center">
@@ -55,4 +55,4 @@ const CreateAttendancePage = async ({ params }: IAttendancePageProps) => {
   );
 };
 
-export default CreateAttendancePage;
+export default ClassAttendancePage;

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { BookCheck, CircleX, BookPlus, List } from 'lucide-react';
+import { BookCheck, CircleX, List, Download, Upload, FileDown, FileUp } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TabButton from '@/components/shared/tab-button';
 import Link from 'next/link';
@@ -89,7 +89,15 @@ const ClassPage = async ({ searchParams = {} }: IClassPageProps) => {
 
           <h1 className="text-4xl font-semibold">Class List</h1>
         </div>
-        <SheetClassForm />
+        <div className="flex gap-3">
+          <SheetClassForm />
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl shadow">
+            <FileUp /> Upload Excel
+          </Button>
+          <Button className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-xl shadow">
+            <FileDown /> Download Excel
+          </Button>
+        </div>
         <div className="flex w-full flex-col gap-4 overflow-hidden p-1">
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
             <Tabs defaultValue={status}>

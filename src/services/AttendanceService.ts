@@ -1,13 +1,13 @@
 import { BaseService } from '@/services/BaseService';
 import { ListFindResultSet } from '@/types/find-result-set';
-import { IAttendance, IClass } from '@/types/models';
+import { IClass, IStudentAttendance } from '@/types/models';
 
 class AttendanceService extends BaseService {
   async getStudentAttendance(
     accessToken: string,
     payload?: object,
-  ): Promise<ListFindResultSet<IAttendance>> {
-    const result = await this.apiGet('api/attendance-student', accessToken, payload);
+  ): Promise<ListFindResultSet<IStudentAttendance>> {
+    const result = await this.apiGet('api/workspaces/1/attendance-student', accessToken, payload);
 
     return result.data;
   }
@@ -22,13 +22,16 @@ class AttendanceService extends BaseService {
   }
 
   async updateStudentAttendance(accessToken: string, payload?: object) {
-    const result = await this.apiPut('api/attendance-student', accessToken, payload);
+    const result = await this.apiPut('api/workspaces/1/attendance-student', accessToken, payload);
 
     return result.data;
   }
 
   async deleteAttendance(accessToken: string, attendanceId: number) {
-    const result = await this.apiDelete(`api/attendances/${attendanceId}`, accessToken);
+    const result = await this.apiDelete(
+      `api/workspaces/1/attendances/${attendanceId}`,
+      accessToken,
+    );
 
     return result.data;
   }
