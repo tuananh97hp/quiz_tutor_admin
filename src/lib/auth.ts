@@ -66,6 +66,13 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
+  session: {
+    strategy: 'jwt', // 🛡 Dùng JWT thay vì database sessions
+    maxAge: 30 * 24 * 60 * 60, // 30 ngày
+  },
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // JWT cũng 30 ngày
+  },
   pages: {
     signIn: '/login',
     signOut: '/login',

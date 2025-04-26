@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -44,7 +44,12 @@ const ForceChangePasswordForm = () => {
     defaultValues: {},
   });
   const isSubmitting = form.formState.isSubmitting;
+
+  useEffect(() => {
+    console.log(form.formState.errors);
+  }, [form.formState.errors]);
   async function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log(currentSession);
     try {
       if (!currentSession?.accessToken) return;
       await AuthService.changePassword(currentSession.accessToken, data);

@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 // global styling
 import '@/assets/css/global.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { authOptions } from '@/lib/auth';
 
 export const metadata: Metadata = {
   title: 'Management System',
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en" suppressHydrationWarning>

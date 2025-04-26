@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react';
 import ForceChangePasswordForm from '@/components/(authenticated)/force-change-password/ForceChangePasswordForm';
-import { getCsrfToken } from 'next-auth/react';
 export default async function ForceChangePasswordPage() {
   const currentUser = await getCurrentUser();
   if (!currentUser?.force_change_password) {
