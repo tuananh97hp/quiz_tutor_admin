@@ -20,18 +20,27 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import UpcomingClass from '@/components/(authenticated)/admin/dashboard/upcoming-class';
 import AlertDialogConfirm from '@/components/shared/alert-dialog-confirm';
+import { getCurrentAccessToken } from '@/utils/session';
+import ClassService from '@/services/ClassService';
+import ClassesToday from '@/components/(authenticated)/admin/dashboard/classes-today';
 
 export const metadata: Metadata = {
   title: 'Admin | Tổng Quan',
 };
 
 const HomePage = async () => {
+  const accessToken = await getCurrentAccessToken();
+  let classesToday;
+  if (accessToken) {
+    classesToday = await ClassService.getClassesToday(accessToken);
+  }
+
   return (
     <div className="mx-auto -mt-4 w-full max-w-screen-2xl px-4 md:px-8">
       <h2 className="text-2xl font-bold tracking-tight">Xin chào, chào mừng bạn trở lại 👋</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="w-full mt-10">
-          <UpcomingClass />
+          <ClassesToday classes={classesToday?.data || []} />
         </div>
         <div className="w-full mt-10 grid grid-cols-2 gap-4 md:grid-cols-2">
           <Card className="@container/card">

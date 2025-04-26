@@ -36,6 +36,12 @@ class ClassService extends BaseService {
     return result.data;
   }
 
+  async getClassesToday(accessToken: string, payload?: object): Promise<ListFindResultSet<IClass>> {
+    const result = await this.apiGet(`api/classes-today`, accessToken, payload);
+
+    return result.data;
+  }
+
   async getClassDetail(accessToken: string, ClassId: number): Promise<DetailResultSet<IClass>> {
     const result = await this.apiGet(`api/classes/${ClassId}`, accessToken);
     return result.data;
