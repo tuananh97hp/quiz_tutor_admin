@@ -26,7 +26,7 @@ const useSessionStorage = <T>(key: string, initialValue?: T): [T, SetValue<T>] =
       setStoredValue(valueToStore);
       sessionStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   return [storedValue, setValue];

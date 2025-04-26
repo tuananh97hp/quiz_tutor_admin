@@ -21,4 +21,45 @@ export const STUDENT_STATUS = {
   PROCESSING: 'processing',
 };
 
+export const TEACHER_STATUS = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  PROCESSING: 'processing',
+};
+
+export const REFERRER_STATUS = {
+  ACTIVE: 'active',
+  INACTIVE: 'inactive',
+  PROCESSING: 'processing',
+};
+
+export const USER_ROLE = {
+  ADMIN: 'admin',
+  TEACHER: 'teacher',
+  STUDENT: 'student',
+  REFERRER: 'referrer',
+};
+
+export const SCHEDULE_STATUS = {
+  COMPLETED: 'completed',
+  PROCESSING: 'processing',
+  UPCOMING: 'upcoming',
+};
+
 export type TStudentStatus = (typeof STUDENT_STATUS)[keyof typeof STUDENT_STATUS];
+export type TTeacherStatus = (typeof TEACHER_STATUS)[keyof typeof TEACHER_STATUS];
+export type TReferrerStatus = (typeof REFERRER_STATUS)[keyof typeof REFERRER_STATUS];
+
+export const ATTENDANCE_STATUS = {
+  PRESENT: 'present',
+  ABSENT: 'absent',
+};
+export type TAttendanceStatus = (typeof ATTENDANCE_STATUS)[keyof typeof ATTENDANCE_STATUS];
+
+export const DEFAULT_META_PAGINATE = {
+  count: 0,
+  last_page: 0,
+  current_page: 0,
+  per_page: 0,
+  total: 0,
+};

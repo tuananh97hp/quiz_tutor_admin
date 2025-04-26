@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CommandMenu } from '@/components/(admin)/command-menu';
+import { CommandMenu } from '@/components/(authenticated)/admin/command-menu';
 
 interface SearchContextType {
   open: boolean;

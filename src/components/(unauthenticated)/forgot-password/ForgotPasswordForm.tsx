@@ -39,30 +39,30 @@ const ForgotPasswordForm = ({ csrfToken }: IForgotPasswordFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-6">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="user@gmail.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="dark:bg-primary dark:hover:opacity-90 w-full">
-            Forgot Password
-          </Button>
+          {/*<FormField*/}
+          {/*  control={form.control}*/}
+          {/*  name="username"*/}
+          {/*  render={({ field }) => (*/}
+          {/*    <FormItem>*/}
+          {/*      <FormLabel>Tên Đăng Nhập</FormLabel>*/}
+          {/*      <FormControl>*/}
+          {/*        <Input placeholder="username" {...field} />*/}
+          {/*      </FormControl>*/}
+          {/*      <FormMessage />*/}
+          {/*    </FormItem>*/}
+          {/*  )}*/}
+          {/*/>*/}
+          {/*<Button type="submit" className="dark:bg-primary dark:hover:opacity-90 w-full">*/}
+          {/*  Forgot Password*/}
+          {/*</Button>*/}
         </div>
         <div className="mt-4 text-muted-foreground text-center text-sm">
-          Remembered your password?&nbsp;
+          Đã nhớ mật khẩu của bạn?&nbsp;
           <a
             href="/login"
             className="text-right text-muted-foreground underline underline-offset-2 text-sm duration-200 hover:opacity-70"
           >
-            Sign in
+            Đăng Nhập
           </a>
         </div>
       </form>

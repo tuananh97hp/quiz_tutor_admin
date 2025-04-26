@@ -38,7 +38,7 @@ export const InputSearch = ({
   return (
     <Input
       type="search"
-      placeholder={`Search ${label} ...`}
+      placeholder={`Tìm kiếm ${label} ...`}
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
     />

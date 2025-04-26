@@ -27,19 +27,19 @@ export function DataTablePagination<TData>({
           .with('SelectedCount', () => (
             <span>
               {table.getFilteredSelectedRowModel().rows.length} of{' '}
-              {table.getFilteredRowModel().rows.length} row(s) selected.
+              {table.getFilteredRowModel().rows.length} row(s) đã chọn.
             </span>
           ))
           .with('VisibleCount', () => {
             const visibleRows = table.getFilteredRowModel().rows.length;
-            return <span data-testid="data-table-count">Showing {visibleRows} results.</span>;
+            return <span data-testid="data-table-count">Hiển thị {visibleRows} kết quả.</span>;
           })
           .with('None', () => null)
           .exhaustive()}
       </div>
 
       <div className="flex items-center gap-x-2">
-        <p className="whitespace-nowrap text-sm font-medium">Items per page</p>
+        <p className="whitespace-nowrap text-sm font-medium">Số lượng trong trang</p>
         <Select
           value={`${table.getState().pagination.pageSize}`}
           onValueChange={(value) => {
@@ -60,7 +60,7 @@ export function DataTablePagination<TData>({
       </div>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-4 lg:gap-x-8">
         <div className="flex items-center text-sm font-medium md:justify-center">
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
+          Trang {table.getState().pagination.pageIndex + 1} của {table.getPageCount() || 1}
         </div>
 
         <div className="flex items-center gap-x-2">
@@ -70,7 +70,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className="sr-only">Go to first page</span>
+            <span className="sr-only">Trang đầu tiên</span>
             <ChevronsLeft className="h-4 w-4" />
           </Button>
           <Button
@@ -79,7 +79,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className="sr-only">Go to previous page</span>
+            <span className="sr-only">Trang trước</span>
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
@@ -88,7 +88,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            <span className="sr-only">Go to next page</span>
+            <span className="sr-only">Trang kế</span>
             <ChevronRight className="h-4 w-4" />
           </Button>
           <Button
@@ -97,7 +97,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <span className="sr-only">Go to last page</span>
+            <span className="sr-only">Trang cuối</span>
             <ChevronsRight className="h-4 w-4" />
           </Button>
         </div>

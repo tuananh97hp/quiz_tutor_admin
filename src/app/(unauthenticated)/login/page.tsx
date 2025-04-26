@@ -1,8 +1,5 @@
 import React from 'react';
 
-// lib
-import { getCsrfToken } from 'next-auth/react';
-
 // components
 import LoginForm from '@/components/(unauthenticated)/Login/LoginForm';
 
@@ -16,8 +13,8 @@ export default async function LoginPage() {
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Sign in to your account</CardTitle>
-              <CardDescription>Welcome back, we are lucky to have you.</CardDescription>
+              <CardTitle className="text-2xl">Đăng Nhâp</CardTitle>
+              <CardDescription>Xin chào 👋! Vui lòng đăng nhập</CardDescription>
             </CardHeader>
             <hr className="mb-4" />
             <CardContent>

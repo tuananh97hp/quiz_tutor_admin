@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { AUTH_CONFIG } from '@/utils/constants';
+import { AUTH_CONFIG, USER_ROLE } from '@/utils/constants';
 import { getToken } from 'next-auth/jwt';
 import { ROUTES } from '@/router/routes';
 
@@ -15,6 +15,23 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
   if (token) {
+    if (
+      token.force_change_password &&
+      !request.nextUrl.pathname.startsWith(`/force-change-password`)
+    ) {
+      const redirectUrl = new URL(ROUTES.FORCE_CHANGE_PASSWORD, request.url);
+      redirectUrl.searchParams.set('callbackUrl', request.nextUrl.href);
+      return NextResponse.redirect(redirectUrl);
+    }
+    if (
+      (request.nextUrl.pathname.startsWith(`/student`) && token.role !== USER_ROLE.STUDENT) ||
+      (request.nextUrl.pathname.startsWith(`/teacher`) && token.role !== USER_ROLE.TEACHER) ||
+      (request.nextUrl.pathname.startsWith(`/admin`) && token.role !== USER_ROLE.ADMIN) ||
+      (request.nextUrl.pathname.startsWith(`/referrer`) && token.role !== USER_ROLE.REFERRER)
+    ) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+
     if (isGuestUrl) {
       return NextResponse.redirect(new URL('/', request.url));
     }

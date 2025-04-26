@@ -7,7 +7,7 @@ import { Loader } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
@@ -20,6 +20,8 @@ const buttonVariants = cva(
         link: 'underline-offset-4 hover:underline text-blue-500',
         creative:
           'bg-fuchsia-400 text-white hover:bg-fuchsia-500 dark:hover:bg-fuchsia-300 dark:bg-fuchsia-500',
+        export: 'bg-green-600 hover:bg-green-700 text-white',
+        import: 'bg-blue-600 hover:bg-blue-700 text-white font-medium',
         none: '',
       },
       size: {

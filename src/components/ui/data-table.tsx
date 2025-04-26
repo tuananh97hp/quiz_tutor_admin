@@ -166,7 +166,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-32 text-center">
-                  <p>No results found</p>
+                  <p>Không tìm thấy kết quả</p>
                   {hasFilters && onClearFilters !== undefined && (
                     <button
                       onClick={() => onClearFilters()}

@@ -93,7 +93,7 @@ export function SingleSelectCombobox<T = OptionValue>({
             role="combobox"
             disabled={loading}
             aria-expanded={open}
-            className="w-full min-w-[200px] px-3"
+            className="w-full min-w-[200px] px-3 bg-white dark:bg-transparent"
           >
             <AnimatePresence>
               {loading ? (
@@ -148,7 +148,7 @@ export function SingleSelectCombobox<T = OptionValue>({
                 <CommandItem key={i} onSelect={() => handleSelect(option.value)}>
                   <Check
                     className={cn(
-                      'mr-2 h-4 w-4',
+                      'mr-1 h-4 w-4',
                       selectedValue === option.value ? 'opacity-100' : 'opacity-0',
                     )}
                   />

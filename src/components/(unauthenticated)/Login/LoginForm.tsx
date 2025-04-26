@@ -22,7 +22,7 @@ import { useSearchParams } from 'next/navigation';
 interface ILoginFormProps {}
 
 const formSchema = z.object({
-  username: z.string().email(),
+  username: z.string().nonempty(),
   password: z.string().nonempty(),
 });
 
@@ -55,9 +55,9 @@ const LoginForm = ({}: ILoginFormProps) => {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Tên Đăng Nhập</FormLabel>
                 <FormControl>
-                  <Input placeholder="user@gmail.com" {...field} />
+                  <Input placeholder="username" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -69,9 +69,9 @@ const LoginForm = ({}: ILoginFormProps) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Mật Khẩu</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput placeholder="Mật khẩu" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -81,13 +81,13 @@ const LoginForm = ({}: ILoginFormProps) => {
               href="/forgot-password"
               className="text-right text-muted-foreground underline underline-offset-2 text-sm duration-200 hover:opacity-70"
             >
-              Forgot your password?
+              Quên mật khẩu?
             </a>
           </div>
           <div>
             {error && (
               <p className="text-sm text-destructive">
-                The email or password provided is incorrect
+                Tên tài khoản của bạn hoặc mật khẩu không đúng, vui lòng thử lại
               </p>
             )}
           </div>
@@ -96,11 +96,11 @@ const LoginForm = ({}: ILoginFormProps) => {
             className="dark:bg-primary dark:hover:opacity-90 w-full"
             loading={isSubmitting}
           >
-            Login
+            Đăng Nhập
           </Button>
         </div>
         <div className="mt-4 text-muted-foreground text-center text-sm">
-          Don&apos;t have an account? Contact admin to create one.
+          Bạn chưa có tài khoản? Hãy liên hệ với quản trị viên.
         </div>
       </form>
     </Form>

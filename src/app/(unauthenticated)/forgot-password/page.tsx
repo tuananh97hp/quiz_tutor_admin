@@ -12,10 +12,9 @@ export default async function ForgotPasswordPage() {
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Forgot your password?</CardTitle>
+              <CardTitle className="text-2xl">Quên Mật Khẩu?</CardTitle>
               <CardDescription>
-                No worries, it happens! Enter your email and we&apos;ll email you a special link to
-                reset your password.
+                Đừng lo lắng, nó sẽ xảy ra! Vui lòng liên hệ với quản trị viên để cấp mật khẩu mới.
               </CardDescription>
             </CardHeader>
             <hr className="mb-4" />
